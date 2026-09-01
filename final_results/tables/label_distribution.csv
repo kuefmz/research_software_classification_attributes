@@ -1,0 +1,19 @@
+source,label,support,percent_of_source_assignments
+bio.tools,Biosciences,13234,43.45570368424509
+bio.tools,Data acquisition,6801,22.332041767912262
+bio.tools,Computer science,3176,10.428843501674658
+bio.tools,Data management,1869,6.137124844027057
+bio.tools,Informatics,1145,3.7597688316805677
+bio.tools,Environmental sciences,1096,3.5988704275300454
+bio.tools,Mathematics,1016,3.3361791554475597
+bio.tools,Chemistry,756,2.4824325211794838
+bio.tools,Experimental design and studies,626,2.0555592040454456
+bio.tools,Literature and language,456,1.497340250870165
+bio.tools,Physics,258,0.8471793524660144
+bio.tools,Open science,21,0.06895645892165232
+papers_with_code,Computer Vision,22138,45.493403477045746
+papers_with_code,Natural Language Processing,16585,34.08203526365542
+papers_with_code,Graphs,5220,10.727056019070321
+papers_with_code,Sequential,2287,4.699765730960503
+papers_with_code,Reinforcement Learning,2210,4.541531379721343
+papers_with_code,Audio,222,0.45620812954666884

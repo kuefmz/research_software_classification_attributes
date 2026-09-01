@@ -1,0 +1,4 @@
+dataset,records,sources,papers_with_code_records,biotools_records,unique_labels_total,records_with_readme,records_with_somef_description,records_with_title_or_abstract
+final_single_label,40330,"bio.tools, papers_with_code",37058,3272,17,39080,34135,40305
+final_multi_label_only,16489,"bio.tools, papers_with_code",5611,10878,18,15813,14165,16438
+final_combined,56819,"bio.tools, papers_with_code",42669,14150,18,54893,48300,56743

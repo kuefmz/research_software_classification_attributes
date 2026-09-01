@@ -1,0 +1,17 @@
+source,attribute_set,records_with_text,records,coverage_percent
+bio.tools,abstract_only,13062,14150,92.31095406360424
+bio.tools,title_only,14074,14150,99.46289752650176
+bio.tools,repository_title_keywords,14150,14150,100.0
+bio.tools,abstract_readme_description,14150,14150,100.0
+bio.tools,abstract_repository_title_keywords,14150,14150,100.0
+bio.tools,all_publication_metadata,14150,14150,100.0
+bio.tools,all_repository_metadata,14150,14150,100.0
+bio.tools,all_available_metadata,14150,14150,100.0
+papers_with_code,abstract_only,42665,42669,99.99062551266728
+papers_with_code,title_only,42669,42669,100.0
+papers_with_code,repository_title_keywords,42669,42669,100.0
+papers_with_code,abstract_readme_description,42669,42669,100.0
+papers_with_code,abstract_repository_title_keywords,42669,42669,100.0
+papers_with_code,all_publication_metadata,42669,42669,100.0
+papers_with_code,all_repository_metadata,42669,42669,100.0
+papers_with_code,all_available_metadata,42669,42669,100.0

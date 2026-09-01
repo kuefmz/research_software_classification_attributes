@@ -1,0 +1,32 @@
+\begin{table}[htbp]
+\centering
+\scriptsize
+\caption{Quick TF--IDF results using all available metadata.}
+\label{tab:tfidf-all-available-quick-results}
+\begin{tabular}{lllrrrr}
+\toprule
+Source & Task & Model & Macro-F1 & Micro-F1 & Weighted-F1 & Acc./Subset Acc. \\
+\midrule
+Papers with Code & Single-label & TF--IDF logistic regression & 0.5121 & 0.7335 & 0.7446 & 0.7335 \\
+Papers with Code & Single-label & TF--IDF LinearSVC & 0.5251 & 0.7427 & 0.7599 & 0.7427 \\
+Papers with Code & Single-label & TF--IDF random forest & 0.5077 & 0.8160 & 0.8004 & 0.8160 \\
+Papers with Code & Single-label & TF--IDF XGBoost & 0.6253 & 0.8902 & 0.8810 & 0.8902 \\
+Papers with Code & Single-label & TF--IDF hard voting & 0.5348 & 0.7609 & 0.7703 & 0.7609 \\
+Papers with Code & Multi-label & TF--IDF logistic regression & 0.4782 & 0.6440 & 0.7311 & 0.3921 \\
+Papers with Code & Multi-label & TF--IDF LinearSVC & 0.4820 & 0.6501 & 0.7440 & 0.3908 \\
+Papers with Code & Multi-label & TF--IDF random forest & 0.5258 & 0.8011 & 0.7842 & 0.6674 \\
+Papers with Code & Multi-label & TF--IDF XGBoost & 0.6184 & 0.8581 & 0.8460 & 0.7638 \\
+Papers with Code & Multi-label & TF--IDF hard voting & 0.4951 & 0.6740 & 0.7512 & 0.4313 \\
+bio.tools & Single-label & TF--IDF logistic regression & 0.2271 & 0.7878 & 0.8048 & 0.7878 \\
+bio.tools & Single-label & TF--IDF LinearSVC & 0.2173 & 0.7832 & 0.8039 & 0.7832 \\
+bio.tools & Single-label & TF--IDF random forest & 0.2391 & 0.8779 & 0.8321 & 0.8779 \\
+bio.tools & Single-label & TF--IDF XGBoost & 0.1855 & 0.8718 & 0.8185 & 0.8718 \\
+bio.tools & Single-label & TF--IDF hard voting & 0.2303 & 0.8000 & 0.8104 & 0.8000 \\
+bio.tools & Multi-label & TF--IDF logistic regression & 0.3341 & 0.5087 & 0.6476 & 0.0876 \\
+bio.tools & Multi-label & TF--IDF LinearSVC & 0.3284 & 0.5034 & 0.6445 & 0.0784 \\
+bio.tools & Multi-label & TF--IDF random forest & 0.2561 & 0.7110 & 0.6463 & 0.3208 \\
+bio.tools & Multi-label & TF--IDF XGBoost & 0.2312 & 0.7420 & 0.6654 & 0.3597 \\
+bio.tools & Multi-label & TF--IDF hard voting & 0.3384 & 0.5264 & 0.6548 & 0.1004 \\
+\bottomrule
+\end{tabular}
+\end{table}

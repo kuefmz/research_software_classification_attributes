@@ -1,0 +1,590 @@
+%Version 3.1 December 2024
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+
+\usepackage{graphicx}%
+\usepackage{multirow}%
+\usepackage{amsmath,amssymb,amsfonts}%
+\usepackage{amsthm}%
+\usepackage{mathrsfs}%
+\usepackage[title]{appendix}%
+\usepackage{xcolor}%
+\usepackage{textcomp}%
+\usepackage{manyfoot}%
+\usepackage{booktabs}%
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{makecell}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\theoremstyle{thmstyleone}%
+\newtheorem{theorem}{Theorem}%
+\newtheorem{proposition}[theorem]{Proposition}%
+\theoremstyle{thmstyletwo}%
+\newtheorem{example}{Example}%
+\newtheorem{remark}{Remark}%
+\theoremstyle{thmstylethree}%
+\newtheorem{definition}{Definition}%
+
+\raggedbottom
+
+\begin{document}
+
+\title{A Comparative Analysis of Semantic Attributes for Research Software Classification: Evidence from Papers with Code and bio.tools}
+
+% TODO(author): insert final author names, email addresses, contribution notes, and affiliations before submission.
+\author*[]{\fnm{} \sur{}}
+
+\abstract{Research Software repositories describe software through heterogeneous schemas, vocabularies, and levels of metadata detail. This paper compares retained semantic metadata attributes in Papers with Code and bio.tools using a harmonized dataset of 56,819 labelled Research Software records. We align final-dataset fields into a unified semantic framework and quantify metadata coverage, completeness, richness, overlap, and repository-specific field availability. The classification design compares sparse lexical baselines, frozen pretrained representations, and local instruction-tuned language-model prompting under zero-shot, one-shot, and few-shot settings. At the time of this manuscript revision, the only validated classification outputs in the repository are held-out test results for Papers with Code single-label classification using paper abstracts and TF--IDF-based sparse baselines. Among those verified rows, TF--IDF LinearSVC gives the highest macro-F1, 0.7249, with micro-F1 and accuracy 0.8687. Older all-metadata results are not reported as findings because legacy predictor definitions included leakage-prone target-derived fields. The semantic analysis shows no literal overlap between the six final Papers with Code labels and the twelve final bio.tools labels, while schema-field and field-availability overlap remain substantial. Recomputed completeness over represented applicable fields reaches mean 0.9706 for Papers with Code and 0.9681 for bio.tools. The results support semantic harmonization as a prerequisite for interoperable metadata comparison and provide a reproducible framework for leakage-audited Research Software classification.}
+
+\keywords{Research Software, Metadata, Semantic Attributes, Research Software Classification, Papers with Code, bio.tools, EDAM, TF--IDF}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:introduction}
+
+Research Software has become an essential component of contemporary scientific practice. Software supports data acquisition, simulation, analysis, visualization, and reproducibility, and is increasingly treated as a scholarly output in its own right. The FAIR principles and their Research Software extension emphasize that software should be findable, accessible, interoperable, and reusable, and that these goals depend on rich and machine-actionable metadata \cite{Wilkinson2016FAIR,Lamprecht2020FAIRSoftware,Barker2022FAIR4RS,FAIR4RS2022Principles}. Software citation guidance similarly highlights the importance of metadata for attribution and reuse \cite{Smith2016SoftwareCitation}.
+
+Research Software metadata are distributed across heterogeneous repositories. Papers with Code links publications to implementations and organizes machine-learning research through tasks, methods, datasets, and benchmarks \cite{PapersWithCodeWebsite}. bio.tools describes Life Science software through the biotoolsSchema and EDAM ontology, including topics and operations \cite{Ison2013EDAM,Ison2019BioTools,Ison2021BioToolsSchema}. These resources share the broad goal of improving software discovery, yet they differ in vocabulary, metadata structure, domain, and curation practice. Such differences complicate cross-repository metadata integration and the development of general Research Software classification workflows.
+
+This paper studies that problem from two complementary perspectives. First, it compares the semantic metadata retained from Papers with Code and bio.tools after preprocessing and harmonization into a unified schema. Second, it defines and audits a classification workflow that separates completed, validated experiments from implemented or planned experiments. The current evidence base supports claims about semantic metadata comparison and about a narrow set of verified TF--IDF abstract-only baselines. It does not yet support conclusions about frozen-transformer or local-LLM performance.
+
+The contributions of this paper are:
+
+\begin{enumerate}
+\item a repository-grounded semantic harmonization of retained Papers with Code and bio.tools metadata attributes;
+\item a quantitative comparison of metadata coverage, completeness, richness, literal label overlap, schema-field overlap, and repository-specific field availability;
+\item a leakage-audited classification design covering sparse lexical baselines, frozen pretrained embeddings, and local instruction-tuned language-model prompting; and
+\item a status-aware reporting framework that distinguishes validated results from pending experiments.
+\end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Research Software Metadata and FAIR Principles}
+\label{subsec:related-rs-metadata}
+
+Research Software is now widely recognized as a scholarly object that should be preserved, cited, and reused alongside publications and data \cite{Katz2014,Smith2016SoftwareCitation}. FAIR4RS extends the FAIR principles to software-specific concerns such as executability, dependencies, versioning, and development context \cite{Lamprecht2020FAIRSoftware,Barker2022FAIR4RS,FAIR4RS2022Principles}. These recommendations make metadata quality a central condition for discovery, interoperability, and reuse.
+
+\subsection{Repositories, Standards, and Ontologies}
+\label{subsec:related-registries}
+
+Research Software is described by both general and domain-specific infrastructures. Papers with Code links papers, code, tasks, methods, datasets, and evaluation results \cite{PapersWithCodeWebsite}. bio.tools provides a curated Life Science registry grounded in EDAM and biotoolsSchema \cite{Ison2013EDAM,Ison2019BioTools,Ison2021BioToolsSchema}. Broader infrastructures such as OpenAIRE and Software Heritage connect software with scholarly objects or preserve source code over time \cite{Manghi2023OpenAIRE,DiCosmo2020SWH}.
+
+Metadata standards help reduce heterogeneity. CodeMeta defines a crosswalk over software metadata schemas using Schema.org and JSON-LD \cite{Jones2019CodeMeta}, while Citation File Format provides lightweight citation metadata for software repositories \cite{Druskat2021CFF}. Ontologies such as EDAM and the Software Ontology provide richer controlled vocabularies for domain concepts, operations, formats, software entities, licenses, and provenance \cite{Ison2013EDAM,Malone2014SWO}. Despite these efforts, repository implementations retain different fields and use different vocabularies, making empirical comparison necessary.
+
+\subsection{Research Software Classification}
+\label{subsec:related-classification}
+
+Prior work has classified software using repository text, README files, dependencies, source-code features, and knowledge-graph representations. Examples include ClassifyHub \cite{Soll2017ClassifyHub}, HiGitClass \cite{Zhang2019HiGitClass}, LabelGit \cite{Sas2021LabelGit}, README-based classification \cite{Prana2019README}, and AIMMX \cite{Tsay2020AIMMX}. Other work extracts or represents Research Software metadata in knowledge graphs, including OKG-Soft, SoMEF, and software metadata knowledge-graph frameworks \cite{Garijo2019OKGSoft,Mao2019SoMEF,Kelley2021SoftwareKG}. Publication-level semantic classification methods such as the CSO Classifier further show that titles and abstracts can support controlled-topic prediction \cite{Salatino2019CSOClassifier}.
+
+\begin{table}[htbp]
+\centering
+\caption{Representative work related to software classification, metadata extraction, and semantic representation.}
+\label{tab:related-work-comparison}
+\small
+\begin{tabularx}{\textwidth}{p{2.6cm}p{1.9cm}Ycccc}
+\toprule
+Approach & Source & Main metadata & ML & Ont. & Extract. & Cross-repo \\
+\midrule
+ClassifyHub \cite{Soll2017ClassifyHub} & GitHub & Repository metadata and descriptions & Yes & No & No & No \\
+HiGitClass \cite{Zhang2019HiGitClass} & GitHub & Name, description, README, tags, keywords & Yes & No & No & No \\
+AIMMX \cite{Tsay2020AIMMX} & AI repositories & Models, datasets, frameworks, references & Yes & No & Yes & No \\
+LabelGit \cite{Sas2021LabelGit} & GitHub & Dependency graphs and source code & Yes & No & No & No \\
+README classification \cite{Prana2019README} & GitHub & README documentation & Yes & No & No & No \\
+OKG-Soft \cite{Garijo2019OKGSoft} & Repositories & Machine-readable software metadata graph & No & Yes & Yes & No \\
+SoMEF \cite{Mao2019SoMEF} & GitHub & README-derived software metadata & Yes & No & Yes & No \\
+Software KG \cite{Kelley2021SoftwareKG} & Multiple & Extracted software metadata graph & Yes & Yes & Yes & No \\
+CSO Classifier \cite{Salatino2019CSOClassifier} & Publications & Titles, abstracts, keywords & Yes & Yes & No & No \\
+\midrule
+This paper & PwC + bio.tools & Harmonized final metadata fields & Yes & Yes & Yes & Yes \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Existing work demonstrates the value of metadata for software classification and discovery, but less often compares which semantic attributes are retained and usable across heterogeneous repositories. This paper addresses that gap while explicitly separating semantic harmonization from model-performance claims.
+
+\section{Research Questions}
+\label{sec:rq}
+
+\begin{description}
+\item[\textbf{RQ1.}] Which semantic attributes are represented by Papers with Code and bio.tools, and how can they be organized into a unified semantic framework?
+\item[\textbf{RQ2.}] To what extent do the repositories overlap at literal-vocabulary, schema-field, and field-availability levels?
+\item[\textbf{RQ3.}] How do the repositories differ in metadata coverage, completeness, richness, and repository-specific field availability?
+\item[\textbf{RQ4.}] What do the currently validated leakage-audited classification results show about metadata-based Research Software classification?
+\item[\textbf{RQ5.}] Which additional sparse, frozen-embedding, and local-LLM experiments remain implemented or planned but not yet validated?
+\end{description}
+
+\section{Data Sources}
+\label{sec:data}
+
+The study uses a harmonized final dataset package derived from Papers with Code and bio.tools records enriched with repository and documentation metadata. The final combined dataset contains 56,819 labelled Research Software records: 42,669 from Papers with Code and 14,150 from bio.tools. The single-label subset contains records with exactly one label. The multi-label-only subset contains records with two or more labels. The all-records multi-label task, used by the runner for source-specific merged datasets, includes both single-label and multi-label records and evaluates each record as a label set. These dataset names are kept distinct because the multi-label-only subset is not the same as the all-records multi-label formulation.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Final datasets used for semantic analysis and classification.}
+\label{tab:dataset-overview}
+\begin{tabular}{lrrrrrr}
+\toprule
+Dataset & Records & PwC & bio.tools & Labels & README & SOMEF \\
+\midrule
+Single-label subset & 40,330 & 37,058 & 3,272 & 17 & 39,080 & 34,135 \\
+Multi-label-only subset & 16,489 & 5,611 & 10,878 & 18 & 15,813 & 14,165 \\
+Final combined & 56,819 & 42,669 & 14,150 & 18 & 54,893 & 48,300 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Papers with Code contributes publication-oriented metadata, repository URLs, top-level research labels, tasks, methods, README content, and SoMEF-derived descriptions. The final Papers with Code label space contains six labels after the non-informative \emph{General} label is removed during final dataset construction. bio.tools contributes tool names and descriptions, publication metadata, repository URLs, README content, SoMEF-derived descriptions, and EDAM-derived labels and operations. For bio.tools, detailed EDAM topic labels were mapped to the highest meaningful EDAM topic categories below the EDAM Topic root; the final bio.tools label space contains twelve labels in the combined and multi-label-only data and eleven labels in the single-label subset.
+
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Pipeline Overview}
+\label{subsec:methodology-overview}
+
+The methodology consists of metadata acquisition, preprocessing, repository-specific normalization, semantic harmonization, quantitative semantic evaluation, leakage-audited predictor construction, and classification evaluation.
+
+\begin{figure}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{YcYcY}
+\fbox{\begin{minipage}{0.25\textwidth}\centering Data acquisition\\PwC and bio.tools records\end{minipage}} &
+\(\rightarrow\) &
+\fbox{\begin{minipage}{0.25\textwidth}\centering Normalization\\final harmonized records\end{minipage}} &
+\(\rightarrow\) &
+\fbox{\begin{minipage}{0.25\textwidth}\centering Semantic framework\\unified dimensions\end{minipage}} \\
+\multicolumn{5}{c}{\(\downarrow\)} \\
+\fbox{\begin{minipage}{0.25\textwidth}\centering Semantic analysis\\coverage, completeness, richness, overlap\end{minipage}} &
+\(\leftarrow\) &
+\fbox{\begin{minipage}{0.25\textwidth}\centering Predictor audit\\target and leakage fields excluded\end{minipage}} &
+\(\rightarrow\) &
+\fbox{\begin{minipage}{0.25\textwidth}\centering Classification evaluation\\verified results and pending pipelines\end{minipage}}
+\end{tabularx}
+\caption{Methodology pipeline for semantic metadata harmonization and Research Software classification evaluation.}
+\label{fig:methodology-pipeline}
+\end{figure}
+
+\subsection{Preprocessing and Missing Values}
+\label{subsec:methodology-preprocessing}
+
+Records were normalized using the repository implementation. Text fields were whitespace-normalized and null-like strings such as \texttt{nan}, \texttt{none}, and \texttt{null} were treated as missing. List-valued fields were parsed, deduplicated, and counted as populated only when at least one usable normalized value remained. Papers with Code duplicates were handled using normalized publication titles before repository association. bio.tools records were aligned from tool metadata and publication metadata; multiple DOI-linked publications could create multiple software-publication records before final filtering.
+
+\subsection{Unified Semantic Framework}
+\label{subsec:semantic-framework}
+
+The unified semantic framework defines conceptual dimensions for comparing repository metadata. A semantic dimension was considered populated when at least one mapped final-dataset field contained a usable value.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Semantic-dimension mapping used for the final dataset package.}
+\label{tab:semantic-crosswalk}
+\begin{tabularx}{\textwidth}{p{3.4cm}YY}
+\toprule
+Semantic Dimension & Papers with Code fields & bio.tools fields \\
+\midrule
+Software Identifier & \texttt{item\_id} & \texttt{item\_id} \\
+Software Name & \texttt{software\_name}, \texttt{repository\_title} & \texttt{software\_name}, \texttt{repository\_title} \\
+Software Description & \texttt{software\_description}, \texttt{repository\_description}, \texttt{somef\_description} & \texttt{software\_description}, \texttt{repository\_description}, \texttt{somef\_description} \\
+Publication Metadata & \texttt{paper\_title}, \texttt{paper\_abstract}, \texttt{publication\_url} & \texttt{paper\_title}, \texttt{paper\_abstract}, \texttt{publication\_url} \\
+Research Domain & \texttt{labels} & \texttt{labels} \\
+Software Functionality & \texttt{tasks}, \texttt{methods}, \texttt{secondary\_labels} & \texttt{tasks}, \texttt{methods}, \texttt{secondary\_labels} \\
+Source Code Repository & \texttt{repository\_url} & \texttt{repository\_url} \\
+Documentation & \texttt{readme\_content} & \texttt{readme\_content} \\
+Input/output data, data format, programming language, license, benchmarks, evaluation metrics & Not represented as retained structured fields & Not represented as retained structured fields \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Semantic Metadata Metrics}
+\label{subsec:semantic-metrics}
+
+For semantic dimension \(a\) and source \(s\), metadata coverage was computed as
+\[
+\mathrm{coverage}(a,s)=\frac{\left|\{r \in R_s : a \text{ has a usable value in } r\}\right|}{|R_s|}.
+\]
+When a dimension was represented by multiple fields, a record was counted once if any mapped field was populated.
+
+Completeness was recomputed over represented applicable retained fields so that a complete record can reach 1.0:
+\[
+C_r=\frac{\sum_{f \in A_s} I(r,f)}{|A_s|}.
+\]
+For Papers with Code, \(A_s\) contains \texttt{paper\_title}, \texttt{paper\_abstract}, \texttt{publication\_url}, \texttt{repository\_url}, \texttt{repository\_title}, \texttt{readme\_content}, \texttt{somef\_description}, \texttt{tasks}, \texttt{secondary\_labels}, and \texttt{methods}. For bio.tools, \(A_s\) contains the same shared fields except \texttt{methods}, plus \texttt{software\_name} and \texttt{software\_description}. Low-coverage retained fields such as \texttt{repository\_description} and \texttt{repository\_keywords} are analysed for availability but are not part of the completeness denominator. Semantic richness was summarized by the number of final labels, populated semantic fields, and unique controlled semantic values per record. Semantic overlap was computed at literal label, declared schema-field, and field-availability levels using the Jaccard coefficient.
+
+\subsection{Classification Tasks, Predictors, and Leakage Audit}
+\label{subsec:classification-tasks}
+
+The runner defines six source-specific datasets: \texttt{pwc\_single\_only}, \texttt{pwc\_multi\_only}, \texttt{pwc\_merged}, \texttt{biotools\_single\_only}, \texttt{biotools\_multi\_only}, and \texttt{biotools\_merged}. Single-label tasks predict exactly one label per record. Multi-label tasks binarize the label set and evaluate label-wise predictions.
+
+The target field is \texttt{labels}. Predictor fields must exclude \texttt{labels}, \texttt{tasks}, \texttt{methods}, and \texttt{secondary\_labels}; these fields are direct labels, controlled semantic labels, or target-adjacent taxonomy fields. The current leakage-audited representation groups are title, abstract, publication text, repository description, README, repository text, SoMEF-derived description, publication metadata, repository metadata, and all non-target textual metadata. The phrase ``all available metadata'' is not used for validated classification claims because legacy scripts used it for leakage-prone predictors.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Predictor-field leakage audit for classification experiments.}
+\label{tab:leakage-audit}
+\begin{tabularx}{\textwidth}{p{3.5cm}Y}
+\toprule
+Category & Fields \\
+\midrule
+Target field & \texttt{labels} \\
+Excluded leakage-prone fields & \texttt{labels}, \texttt{tasks}, \texttt{methods}, \texttt{secondary\_labels} \\
+Main non-target text fields & \texttt{paper\_title}, \texttt{paper\_abstract}, \texttt{software\_name}, \texttt{software\_description}, \texttt{repository\_title}, \texttt{repository\_description}, \texttt{repository\_keywords}, \texttt{readme\_content}, \texttt{somef\_description} \\
+Verified current predictor & \texttt{paper\_abstract} only, for Papers with Code single-label classification \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Classification Pipelines}
+\label{subsec:classification-pipelines}
+
+Table~\ref{tab:classification-pipeline-design} lists the retained experimental design. Sparse lexical pipelines use TF--IDF unigram/bigram vectors and lightweight classifiers. Frozen pretrained pipelines encode text with fixed transformer encoders and train a lightweight downstream classifier on top. Local LLM pipelines use constrained label vocabularies, structured JSON output, deterministic or as-deterministic-as-possible generation with temperature 0, parsing/retry handling, and locally recorded prompt templates and model identifiers. Prompting is zero-shot when no examples are supplied, one-shot when one representative example is supplied, and few-shot when a small fixed set of representative examples is supplied from the training split. No data is transmitted to an external commercial API.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Classification pipelines retained in the experimental design. All listed pipelines are designed for both single-label and multi-label tasks.}
+\label{tab:classification-pipeline-design}
+\begin{tabularx}{\textwidth}{p{2.5cm}Yp{3.2cm}p{3.1cm}}
+\toprule
+Family & Representation & Decision method & Status \\
+\midrule
+Sparse lexical & TF--IDF & Logistic regression & Verified for PwC single abstract only \\
+Sparse lexical & TF--IDF & LinearSVC & Verified for PwC single abstract only \\
+Sparse lexical & TF--IDF & Random forest & Verified for PwC single abstract only \\
+Sparse lexical & TF--IDF & XGBoost & Verified for PwC single abstract only \\
+Sparse lexical & TF--IDF & Hard voting ensemble & Verified for PwC single abstract only \\
+Frozen embeddings & SBERT & Logistic regression / LinearSVC & Pending model selection \\
+Frozen embeddings & SPECTER or SPECTER2 & Logistic regression / LinearSVC & Pending model selection \\
+Frozen embeddings & SciBERT, RoBERTa, ModernBERT, DeBERTa-v3 & Logistic regression / random forest & Implemented, pending validated full run \\
+Local LLM & zero-shot prompting & JSON label generation & Pending local model selection \\
+Local LLM & one-shot prompting & JSON label generation & Pending local model selection \\
+Local LLM & few-shot prompting & JSON label generation & Pending local model selection \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Evaluation Metrics and Reproducibility}
+\label{subsec:evaluation-metrics}
+
+For single-label classification, the runner reports accuracy and macro-, micro-, and weighted-F1. For multi-label classification, it reports macro-, micro-, weighted-, and sample-average F1, subset accuracy, and hamming loss. Precision, recall, and F1 are defined as
+\[
+P=\frac{TP}{TP+FP}, \quad R=\frac{TP}{TP+FN}, \quad F_1=\frac{2PR}{P+R}.
+\]
+Metric computation uses \texttt{zero\_division=0}. Macro-F1 is the primary comparison metric because both repositories are imbalanced; micro-F1 and weighted-F1 may remain high when rare labels perform poorly.
+
+Train/test splits use a deterministic 80/20 split with random seed 42. Single-label splitting uses stratification when class support permits. Multi-label splitting is deterministic random splitting unless multilabel stratification is added in a future run. The same train/test indices are reused across attribute sets and models within a dataset. Current validated results come from one split and should be treated as exploratory, not as robustness evidence.
+
+\section{Semantic Metadata Analysis}
+\label{sec:semantic-analysis}
+
+\subsection{Metadata Coverage}
+\label{subsec:semantic-coverage}
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+\caption{Metadata coverage by unified semantic dimension and source.}
+\label{tab:semantic-dimension-coverage}
+\begin{tabularx}{\textwidth}{p{3.1cm}p{3.4cm}p{3.4cm}Y}
+\toprule
+Semantic Dimension & PwC Coverage & bio.tools Coverage & Avail. \\
+\midrule
+Software Identifier & 42,669 / 42,669 (100.00\%) & 14,150 / 14,150 (100.00\%) & Shared \\
+Software Name & 42,669 / 42,669 (100.00\%) & 14,150 / 14,150 (100.00\%) & Shared \\
+Software Description & 36,032 / 42,669 (84.45\%) & 14,150 / 14,150 (100.00\%) & Shared \\
+Publication Metadata & 42,669 / 42,669 (100.00\%) & 14,150 / 14,150 (100.00\%) & Shared \\
+Research Domain & 42,669 / 42,669 (100.00\%) & 14,150 / 14,150 (100.00\%) & Shared \\
+Software Functionality & 42,669 / 42,669 (100.00\%) & 13,521 / 14,150 (95.55\%) & Shared \\
+Input / Output Data & 0 / 42,669 (0.00\%) & 0 / 14,150 (0.00\%) & Not repr. \\
+Data Format & 0 / 42,669 (0.00\%) & 0 / 14,150 (0.00\%) & Not repr. \\
+Programming Language & 0 / 42,669 (0.00\%) & 0 / 14,150 (0.00\%) & Not repr. \\
+License & 0 / 42,669 (0.00\%) & 0 / 14,150 (0.00\%) & Not repr. \\
+Source Code Repository & 42,669 / 42,669 (100.00\%) & 14,150 / 14,150 (100.00\%) & Shared \\
+Documentation & 41,405 / 42,669 (97.04\%) & 13,488 / 14,150 (95.32\%) & Shared \\
+Benchmarks & 0 / 42,669 (0.00\%) & 0 / 14,150 (0.00\%) & Not repr. \\
+Evaluation Metrics & 0 / 42,669 (0.00\%) & 0 / 14,150 (0.00\%) & Not repr. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Eight of the fourteen evaluated dimensions are represented above the 5\% availability threshold in both repositories. Six dimensions are not represented as retained structured fields in the final combined dataset: input/output data, data format, programming language, license, benchmarks, and evaluation metrics. This statement applies to retained final analysis fields and does not imply that the original repositories necessarily lack these metadata.
+
+\subsection{Metadata Completeness}
+\label{subsec:semantic-completeness}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Metadata completeness over represented applicable fields by source.}
+\label{tab:semantic-completeness-descriptive-statistics}
+\begin{tabular}{lrrrrrr}
+\toprule
+Source & Fields & Mean & Median & Std. & Min. & Max. \\
+\midrule
+Papers with Code & 10 & 0.9706 & 1.0000 & 0.0552 & 0.7000 & 1.0000 \\
+bio.tools & 11 & 0.9681 & 1.0000 & 0.0650 & 0.5455 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Completeness is high under the revised denominator, and the maximum is now interpretable: records can reach 1.0 when every represented applicable field is populated. The lower minima indicate that a minority of records still lack several retained descriptive fields.
+
+\subsection{Semantic Richness}
+\label{subsec:semantic-richness}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Semantic richness by repository.}
+\label{tab:semantic-richness-descriptive-statistics}
+\begin{tabular}{lrr}
+\toprule
+Metric & Papers with Code & bio.tools \\
+\midrule
+Mean labels per record & 1.1405 & 2.1522 \\
+Median labels per record & 1.0000 & 2.0000 \\
+SD labels per record & 0.3736 & 0.8598 \\
+Mean populated semantic fields & 9.7063 & 10.6490 \\
+Median populated semantic fields & 10.0000 & 11.0000 \\
+Mean unique controlled semantic values & 15.3426 & 4.8049 \\
+Median unique controlled semantic values & 9.0000 & 5.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+bio.tools records have more labels per record on average, while Papers with Code has more unique controlled semantic values per record and greater variability.
+
+\subsection{Semantic Overlap and Repository-specific Availability}
+\label{subsec:semantic-overlap}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Semantic overlap between Papers with Code and bio.tools.}
+\label{tab:semantic-overlap-summary}
+\begin{tabularx}{\textwidth}{Yrrrrr}
+\toprule
+Overlap Level & PwC Count & bio.tools Count & Shared & Union & Jaccard \\
+\midrule
+Literal final label strings & 6 & 12 & 0 & 18 & 0.0000 \\
+Shared applicable schema fields & 12 & 13 & 11 & 14 & 0.7857 \\
+Field availability at 5\% threshold & 10 & 11 & 9 & 12 & 0.7500 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The final label vocabularies have no literal string overlap. Schema-field and field-availability overlap show structural comparability, not completed semantic alignment. Ontology-level mapping between Papers with Code categories and EDAM topics remains future work.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Repository-specific field availability using the 5\% coverage threshold.}
+\label{tab:repository-specific-attribute-availability}
+\begin{tabularx}{\textwidth}{p{3.2cm}Y}
+\toprule
+Availability Class & Final-dataset Fields \\
+\midrule
+Shared & \texttt{paper\_title}, \texttt{paper\_abstract}, \texttt{publication\_url}, \texttt{repository\_url}, \texttt{repository\_title}, \texttt{readme\_content}, \texttt{somef\_description}, \texttt{tasks}, \texttt{secondary\_labels} \\
+Papers with Code only & \texttt{methods} \\
+bio.tools only & \texttt{software\_name}, \texttt{software\_description} \\
+Below threshold in both & \texttt{repository\_description}, \texttt{repository\_keywords} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Research Software Classification Experiments and Results}
+\label{sec:classification-results}
+
+\subsection{Experiment Status}
+\label{subsec:classification-overview}
+
+Table~\ref{tab:experiment-status} records the current status of the classification experiments. Fine-grained metrics are reported only for rows with validated saved outputs.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Experiment status for the current manuscript revision.}
+\label{tab:experiment-status}
+\begin{tabularx}{\textwidth}{Ycccc}
+\toprule
+Experiment family & Implemented & Run completed & Results validated & Included here \\
+\midrule
+TF--IDF sparse baselines, PwC single-label abstract-only & Yes & Yes & Yes & Yes \\
+Other sparse baseline datasets and attribute sets & Yes & No & No & No \\
+Frozen transformer embeddings & Yes & No & No & No \\
+Local LLM zero-shot prompting & Interface only & No & No & No \\
+Local LLM one-shot prompting & Interface only & No & No & No \\
+Local LLM few-shot prompting & Interface only & No & No & No \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The verified held-out test split contains 37,058 Papers with Code single-label records, with 29,646 training records and 7,412 test records across six labels. The split is deterministic and stratified with random seed 42.
+
+\subsection{Verified Held-out Test Results}
+\label{subsec:pipeline-comparison}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Validated held-out test results currently saved in \texttt{final\_results/tables/classification\_results.csv}. All rows use Papers with Code single-label records and paper abstracts only.}
+\label{tab:verified-classification-results}
+\begin{tabular}{lrrrr}
+\toprule
+Pipeline & Macro-F1 & Micro-F1 & Weighted-F1 & Accuracy \\
+\midrule
+TF--IDF LinearSVC & 0.7249 & 0.8687 & 0.8691 & 0.8687 \\
+TF--IDF hard voting & 0.7143 & 0.8672 & 0.8668 & 0.8672 \\
+TF--IDF XGBoost & 0.6705 & 0.8764 & 0.8722 & 0.8764 \\
+TF--IDF logistic regression & 0.6468 & 0.8176 & 0.8210 & 0.8176 \\
+TF--IDF random forest & 0.6282 & 0.8620 & 0.8550 & 0.8620 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Among the validated rows, LinearSVC has the highest macro-F1, while XGBoost has the highest accuracy and micro-F1. The divergence between macro-F1 and accuracy shows why macro-F1 is the primary metric: high accuracy can coincide with weaker rare-label performance.
+
+\subsection{Label Support and Class-level Results}
+\label{subsec:error-analysis}
+
+Class-level reporting uses a minimum test-support threshold of 10. This threshold affects descriptive class-level tables only; it does not remove classes from aggregate macro-F1 computation. The complete unfiltered classification reports remain in the replication package.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Label support for the verified Papers with Code single-label split. All classes pass the reporting threshold of 10 test examples.}
+\label{tab:label-support}
+\begin{tabular}{lrrrc}
+\toprule
+Label & Train & Test & Share (\%) & Reported \\
+\midrule
+Computer Vision & 14,128 & 3,532 & 47.66 & Yes \\
+Natural Language Processing & 10,125 & 2,532 & 34.15 & Yes \\
+Graphs & 3,069 & 767 & 10.35 & Yes \\
+Reinforcement Learning & 1,208 & 302 & 4.07 & Yes \\
+Sequential & 1,064 & 266 & 3.59 & Yes \\
+Audio & 52 & 13 & 0.18 & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Per-class F1 extremes for the verified TF--IDF hard-voting row, restricted to classes with at least 10 test examples.}
+\label{tab:per-class-extremes}
+\begin{tabular}{llrrr}
+\toprule
+Extreme & Label & Precision & Recall & F1 \\
+\midrule
+Lowest & Audio & 0.2941 & 0.3846 & 0.3333 \\
+Highest & Computer Vision & 0.8958 & 0.9077 & 0.9017 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The support distribution is highly imbalanced. Audio has only 13 test records and remains difficult even though it passes the reporting threshold; Computer Vision and Natural Language Processing dominate the test set.
+
+\subsection{Removed and Pending Results}
+\label{subsec:removed-pending-results}
+
+Legacy all-metadata TF--IDF LinearSVC rows in older result folders are not reported as findings because the historical \texttt{all\_available\_metadata} predictor definition included leakage-prone fields such as \texttt{tasks}, \texttt{methods}, \texttt{secondary\_labels}, and in some scripts \texttt{labels}. Those rows must be rerun with the new \texttt{all\_non\_target\_textual\_metadata} definition before they can support claims. Frozen-embedding and local-LLM experiments are also pending validated outputs.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Answers to the Research Questions}
+\label{subsec:discussion-rqs}
+
+RQ1 asked which attributes are represented and how they can be organized. The final retained package supports a unified framework covering identifiers, names, descriptions, publication metadata, research domains, functionality, repository links, and documentation. It does not retain structured input/output data, data formats, programming languages, licenses, benchmarks, or evaluation metrics as final analysis fields.
+
+RQ2 asked how the repositories overlap. Literal label overlap is zero, but schema-field overlap is substantial, with a Jaccard coefficient of 0.7857. Field-availability overlap is also high, with a Jaccard coefficient of 0.7500. These values are evidence of structural comparability, not evidence that the two vocabularies are semantically aligned.
+
+RQ3 asked how the repositories differ in coverage, completeness, richness, and repository-specific fields. Both have high completeness under the revised denominator. bio.tools has more labels per record and slightly more populated fields, while Papers with Code has more unique controlled semantic values and greater variability. Dedicated software-name and software-description fields are bio.tools-specific at the field level, while methods are Papers with Code-specific.
+
+RQ4 asked what the currently validated classification results show. The current held-out test evidence is limited to Papers with Code single-label classification from abstracts. In that setting, LinearSVC has the highest verified macro-F1 among the TF--IDF baselines, while XGBoost has the highest accuracy. Macro-F1 remains lower than accuracy because rare labels are difficult.
+
+RQ5 asked which experiments remain pending. Additional sparse baselines across all datasets and leakage-audited attribute sets need to be rerun. Frozen transformer embeddings and local LLM zero-shot, one-shot, and few-shot prompting are implemented or specified but do not yet have validated full outputs.
+
+\subsection{Semantic Metadata and Predictive Utility}
+\label{subsec:discussion-semantic-predictive}
+
+The semantic analysis and classification results should be interpreted together but not conflated. High field coverage does not by itself guarantee predictive utility, and the current verified classification rows cover only abstract text. Claims about richer non-target metadata, repository text, frozen embeddings, or local prompting require completed leakage-audited runs.
+
+\subsection{Implications for Metadata Standards and Repositories}
+\label{subsec:discussion-standards}
+
+The final retained package lacks structured programming language, license, data-format, benchmark, and evaluation-metric fields. These dimensions are relevant to standards such as CodeMeta, CFF, EDAM, and software registry schemas, but they cannot be analysed unless extraction pipelines preserve them in the final analysis package. Repositories and harmonization workflows should retain structured source-level fields, provenance, and controlled identifiers alongside textual descriptions.
+
+\subsection{Implications for Knowledge Graphs and Interoperability}
+\label{subsec:discussion-kg}
+
+The semantic-overlap results support a knowledge-graph view of interoperability. Direct vocabulary matching is insufficient, but schema-level and concept-level alignment can reveal shared structure. Future integrations should preserve provenance for each mapped field and should support explicit ontology alignment between Papers with Code concepts and EDAM categories. Ontology matching methods provide a possible direction for this future work \cite{Euzenat2013OntologyMatching,Otero2015OntologyMatching,Trojahn2022Foundational}.
+
+\section{Threats to Validity}
+\label{sec:threats}
+
+\subsection{Dataset and Selection Validity}
+\label{subsec:threats-dataset}
+
+The final datasets include only records retained by the implemented pipeline. Filtering by repository URL excludes software without such links. bio.tools records are affected by publication expansion, DOI-linked publication metadata, and EDAM top-level mapping. The repositories also represent different domains: Papers with Code is concentrated in artificial intelligence, whereas bio.tools covers Life Science software. These domain differences confound direct source-to-source interpretation.
+
+\subsection{Construct Validity}
+\label{subsec:threats-construct}
+
+Completeness and richness are operational definitions over retained final fields, not universal measures of metadata quality. The 5\% availability threshold is a pragmatic cutoff and may hide rare but meaningful metadata. Literal label overlap underestimates conceptual similarity because no ontology-level alignment between Papers with Code labels and EDAM labels is implemented. Coverage gaps for programming language, license, format, benchmark, and evaluation metadata refer to retained final fields rather than to all possible source-level metadata.
+
+\subsection{Internal Validity}
+\label{subsec:threats-internal}
+
+Preprocessing choices influence the final representation. Title-based duplicate handling, text normalization, missing-value treatment, and enrichment quality may affect coverage and classification. Repeated repositories or related publications may introduce dependence between records. The verified classification experiments use one deterministic 80/20 split rather than repeated splits or cross-validation. Robustness across alternative splits remains untested for the current validated rows.
+
+\subsection{Model-selection and Evaluation Validity}
+\label{subsec:threats-model-selection}
+
+The validated classification rows are preliminary exploratory results from a single held-out split. They should not be treated as final model-selection estimates. Future work should use validation splits or cross-validation for model and hyperparameter selection, with the final test set used only once. Prompting results may be sensitive to prompt wording, local model snapshot, quantization, response parsing, and runtime hardware. Frozen-embedding results may depend on model cache state, package versions, device, and pooling implementation.
+
+\subsection{External Validity and Reproducibility}
+\label{subsec:threats-external}
+
+The study covers two repositories and should not be generalized without caution to other Research Software registries, package indexes, institutional catalogs, or archival infrastructures. The analyses are grounded in repository scripts and generated output files, and random seed 42 is recorded for implemented train/test experiments. The current manuscript excludes unsupported and leakage-prone historical results; final reproducibility for pending model families depends on rerunning and validating those outputs under the updated protocol.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper compared semantic metadata attributes from Papers with Code and bio.tools and defined a leakage-audited classification protocol for Research Software metadata. The final harmonized dataset contains 56,819 labelled records, with 42,669 from Papers with Code and 14,150 from bio.tools. The semantic analysis shows no literal overlap between final label vocabularies, but substantial overlap at schema-field and field-availability levels. Metadata completeness is high in both repositories when computed over represented applicable fields, while semantic richness differs across sources.
+
+The completed, validated classification evidence is narrower than the original experimental plan: it currently covers TF--IDF sparse baselines for Papers with Code single-label classification using abstracts only. In that verified setting, LinearSVC reaches macro-F1 0.7249 and accuracy 0.8687 on the held-out test set. Additional sparse baselines over all leakage-audited attribute sets, frozen transformer embedding experiments, local LLM zero-shot/one-shot/few-shot experiments, stronger evaluation, and imbalance-aware analysis remain in progress.
+
+Future work should rerun all affected experiments with \texttt{all\_non\_target\_textual\_metadata}, add ontology alignment between Papers with Code and EDAM, evaluate additional Research Software repositories, preserve currently unrepresented structured fields, study cross-domain transfer, and improve multi-label classification.
+
+\backmatter
+
+\section*{Supplementary information}
+The replication package contains the final datasets, generated semantic tables, classification outputs, figures, and scripts used for the analyses.
+
+\section*{Acknowledgements}
+% TODO(author): insert acknowledgements before submission.
+
+\section*{Declarations}
+
+\subsection*{Funding}
+% TODO(author): insert funding statement before submission.
+
+\subsection*{Competing interests}
+% TODO(author): insert competing-interests statement before submission.
+
+\subsection*{Data availability}
+% TODO(author): insert data availability statement before submission.
+
+\subsection*{Code availability}
+% TODO(author): insert code availability statement before submission.
+
+\bibliography{sn-bibliography}
+
+\end{document}

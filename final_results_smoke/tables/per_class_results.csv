@@ -1,0 +1,13 @@
+source_dataset,label_setting,dataset_name,num_records,num_train,num_test,num_labels,attribute_set,split,split_name,fold_id,random_seed,is_smoke_test,smoke_test_records,model_name,label,precision,recall,f1,support
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_logistic_regression,Audio,0.0,0.0,0.0,0.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_logistic_regression,Computer Vision,0.0,0.0,0.0,1.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_logistic_regression,Graphs,0.0,0.0,0.0,1.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_logistic_regression,Natural Language Processing,0.0,0.0,0.0,0.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_logistic_regression,Reinforcement Learning,0.0,0.0,0.0,0.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_logistic_regression,Sequential,0.0,0.0,0.0,0.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_random_forest,Audio,0.0,0.0,0.0,0.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_random_forest,Computer Vision,0.0,0.0,0.0,1.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_random_forest,Graphs,0.0,0.0,0.0,1.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_random_forest,Natural Language Processing,0.0,0.0,0.0,0.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_random_forest,Reinforcement Learning,0.0,0.0,0.0,0.0
+papers_with_code,single,pwc_single_only,10,8,2,6,abstract_only,deterministic_random_split,train_test,,42,True,10,tfidf_random_forest,Sequential,0.0,0.0,0.0,0.0

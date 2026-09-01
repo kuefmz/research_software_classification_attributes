@@ -1,0 +1,43 @@
+dataset_name,source_dataset,label_setting,model_name,status,reason,sentence_transformers_installed,transformers_installed,torch_installed,local_llm_command_configured
+pwc_single_only,papers_with_code,single,sbert_embedding_logistic_regression,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+pwc_single_only,papers_with_code,single,sbert_embedding_linear_svm,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+pwc_single_only,papers_with_code,single,specter_embedding_logistic_regression,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+pwc_single_only,papers_with_code,single,specter_embedding_linear_svm,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+pwc_single_only,papers_with_code,single,local_llm_zero_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+pwc_single_only,papers_with_code,single,local_llm_one_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+pwc_single_only,papers_with_code,single,local_llm_few_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+pwc_multi_only,papers_with_code,multi,sbert_embedding_logistic_regression,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+pwc_multi_only,papers_with_code,multi,sbert_embedding_linear_svm,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+pwc_multi_only,papers_with_code,multi,specter_embedding_logistic_regression,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+pwc_multi_only,papers_with_code,multi,specter_embedding_linear_svm,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+pwc_multi_only,papers_with_code,multi,local_llm_zero_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+pwc_multi_only,papers_with_code,multi,local_llm_one_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+pwc_multi_only,papers_with_code,multi,local_llm_few_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+pwc_merged,papers_with_code,multi,sbert_embedding_logistic_regression,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+pwc_merged,papers_with_code,multi,sbert_embedding_linear_svm,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+pwc_merged,papers_with_code,multi,specter_embedding_logistic_regression,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+pwc_merged,papers_with_code,multi,specter_embedding_linear_svm,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+pwc_merged,papers_with_code,multi,local_llm_zero_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+pwc_merged,papers_with_code,multi,local_llm_one_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+pwc_merged,papers_with_code,multi,local_llm_few_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_single_only,bio.tools,single,sbert_embedding_logistic_regression,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+biotools_single_only,bio.tools,single,sbert_embedding_linear_svm,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+biotools_single_only,bio.tools,single,specter_embedding_logistic_regression,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+biotools_single_only,bio.tools,single,specter_embedding_linear_svm,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+biotools_single_only,bio.tools,single,local_llm_zero_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_single_only,bio.tools,single,local_llm_one_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_single_only,bio.tools,single,local_llm_few_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_multi_only,bio.tools,multi,sbert_embedding_logistic_regression,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+biotools_multi_only,bio.tools,multi,sbert_embedding_linear_svm,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+biotools_multi_only,bio.tools,multi,specter_embedding_logistic_regression,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+biotools_multi_only,bio.tools,multi,specter_embedding_linear_svm,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+biotools_multi_only,bio.tools,multi,local_llm_zero_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_multi_only,bio.tools,multi,local_llm_one_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_multi_only,bio.tools,multi,local_llm_few_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_merged,bio.tools,multi,sbert_embedding_logistic_regression,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+biotools_merged,bio.tools,multi,sbert_embedding_linear_svm,not_run,Pending: requires a selected local SBERT model identifier such as XXX_SBERT_MODEL.,True,True,True,False
+biotools_merged,bio.tools,multi,specter_embedding_logistic_regression,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+biotools_merged,bio.tools,multi,specter_embedding_linear_svm,not_run,Pending: requires a selected local SPECTER/SPECTER2 model identifier such as XXX_SPECTER_MODEL.,True,True,True,False
+biotools_merged,bio.tools,multi,local_llm_zero_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_merged,bio.tools,multi,local_llm_one_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False
+biotools_merged,bio.tools,multi,local_llm_few_shot,not_run,"Pending: requires a selected local instruction-tuned model, local runtime command, and validation run.",True,True,True,False

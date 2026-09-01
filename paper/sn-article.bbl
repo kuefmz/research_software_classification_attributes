@@ -1,0 +1,525 @@
+%% BioMed_Central_Bib_Style_v1.01
+
+\begin{thebibliography}{27}
+% BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
+\ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
+\ifx \binits  \undefined \def \binits#1{#1}\fi
+\ifx \bauthor  \undefined \def \bauthor#1{#1}\fi
+\ifx \batitle  \undefined \def \batitle#1{#1}\fi
+\ifx \bjtitle  \undefined \def \bjtitle#1{#1}\fi
+\ifx \bvolume  \undefined \def \bvolume#1{\textbf{#1}}\fi
+\ifx \byear  \undefined \def \byear#1{#1}\fi
+\ifx \bissue  \undefined \def \bissue#1{#1}\fi
+\ifx \bfpage  \undefined \def \bfpage#1{#1}\fi
+\ifx \blpage  \undefined \def \blpage #1{#1}\fi
+\ifx \burl  \undefined \def \burl#1{\textsf{#1}}\fi
+\ifx \doiurl  \undefined \def \doiurl#1{\url{https://doi.org/#1}}\fi
+\ifx \betal  \undefined \def \betal{\textit{et al.}}\fi
+\ifx \binstitute  \undefined \def \binstitute#1{#1}\fi
+\ifx \binstitutionaled  \undefined \def \binstitutionaled#1{#1}\fi
+\ifx \bctitle  \undefined \def \bctitle#1{#1}\fi
+\ifx \beditor  \undefined \def \beditor#1{#1}\fi
+\ifx \bpublisher  \undefined \def \bpublisher#1{#1}\fi
+\ifx \bbtitle  \undefined \def \bbtitle#1{#1}\fi
+\ifx \bedition  \undefined \def \bedition#1{#1}\fi
+\ifx \bseriesno  \undefined \def \bseriesno#1{#1}\fi
+\ifx \blocation  \undefined \def \blocation#1{#1}\fi
+\ifx \bsertitle  \undefined \def \bsertitle#1{#1}\fi
+\ifx \bsnm \undefined \def \bsnm#1{#1}\fi
+\ifx \bsuffix \undefined \def \bsuffix#1{#1}\fi
+\ifx \bparticle \undefined \def \bparticle#1{#1}\fi
+\ifx \barticle \undefined \def \barticle#1{#1}\fi
+\bibcommenthead
+\ifx \bconfdate \undefined \def \bconfdate #1{#1}\fi
+\ifx \botherref \undefined \def \botherref #1{#1}\fi
+\ifx \url \undefined \def \url#1{\textsf{#1}}\fi
+\ifx \bchapter \undefined \def \bchapter#1{#1}\fi
+\ifx \bbook \undefined \def \bbook#1{#1}\fi
+\ifx \bcomment \undefined \def \bcomment#1{#1}\fi
+\ifx \oauthor \undefined \def \oauthor#1{#1}\fi
+\ifx \citeauthoryear \undefined \def \citeauthoryear#1{#1}\fi
+\ifx \endbibitem  \undefined \def \endbibitem {}\fi
+\ifx \bconflocation  \undefined \def \bconflocation#1{#1}\fi
+\ifx \arxivurl  \undefined \def \arxivurl#1{\textsf{#1}}\fi
+\csname PreBibitemsHook\endcsname
+
+%%% 1
+\bibitem[\protect\citeauthoryear{Wilkinson et~al.}{2016}]{Wilkinson2016FAIR}
+\begin{barticle}
+\bauthor{\bsnm{Wilkinson}, \binits{M.D.}},
+\bauthor{\bsnm{Dumontier}, \binits{M.}},
+\bauthor{\bsnm{Aalbersberg}, \binits{I.J.}},
+\bauthor{\bsnm{Appleton}, \binits{G.}},
+\bauthor{\bsnm{Axton}, \binits{M.}},
+\bauthor{\bsnm{Baak}, \binits{A.}},
+\bauthor{\bsnm{Blomberg}, \binits{N.}},
+\bauthor{\bsnm{Boiten}, \binits{J.-W.}},
+\bauthor{\bsnm{Silva~Santos}, \binits{L.B.}},
+\bauthor{\bsnm{Bourne}, \binits{P.E.}}, \betal:
+\batitle{The fair guiding principles for scientific data management and
+  stewardship}.
+\bjtitle{Scientific Data}
+\bvolume{3},
+\bfpage{160018}
+(\byear{2016})
+\doiurl{10.1038/sdata.2016.18}
+\end{barticle}
+\endbibitem
+
+%%% 2
+\bibitem[\protect\citeauthoryear{Lamprecht
+  et~al.}{2020}]{Lamprecht2020FAIRSoftware}
+\begin{barticle}
+\bauthor{\bsnm{Lamprecht}, \binits{A.-L.}},
+\bauthor{\bsnm{Garcia}, \binits{L.}},
+\bauthor{\bsnm{Kuzak}, \binits{M.}},
+\bauthor{\bsnm{Martinez}, \binits{C.}},
+\bauthor{\bsnm{Arcila}, \binits{R.}},
+\bauthor{\bsnm{Martin Del~Pico}, \binits{E.}},
+\bauthor{\bsnm{Dominguez Del~Angel}, \binits{V.}},
+\bauthor{\bsnm{Sandt}, \binits{S.}},
+\bauthor{\bsnm{Ison}, \binits{J.}},
+\bauthor{\bsnm{Martinez}, \binits{P.A.}},
+\bauthor{\bsnm{McQuilton}, \binits{P.}},
+\bauthor{\bsnm{Valencia}, \binits{A.}},
+\bauthor{\bsnm{Harrow}, \binits{J.}},
+\bauthor{\bsnm{Psomopoulos}, \binits{F.}},
+\bauthor{\bsnm{Gelpi}, \binits{J.L.}},
+\bauthor{\bsnm{Chue~Hong}, \binits{N.}},
+\bauthor{\bsnm{Goble}, \binits{C.}},
+\bauthor{\bsnm{Capella-Gutierrez}, \binits{S.}}:
+\batitle{Towards fair principles for research software}.
+\bjtitle{Data Science}
+\bvolume{3}(\bissue{1}),
+\bfpage{37}--\blpage{59}
+(\byear{2020})
+\doiurl{10.3233/DS-190026}
+\end{barticle}
+\endbibitem
+
+%%% 3
+\bibitem[\protect\citeauthoryear{Barker et~al.}{2022}]{Barker2022FAIR4RS}
+\begin{barticle}
+\bauthor{\bsnm{Barker}, \binits{M.}},
+\bauthor{\bsnm{Chue~Hong}, \binits{N.P.}},
+\bauthor{\bsnm{Katz}, \binits{D.S.}},
+\bauthor{\bsnm{Lamprecht}, \binits{A.-L.}},
+\bauthor{\bsnm{Martinez-Ortiz}, \binits{C.}},
+\bauthor{\bsnm{Psomopoulos}, \binits{F.}},
+\bauthor{\bsnm{Harrow}, \binits{J.}},
+\bauthor{\bsnm{Castro}, \binits{L.J.}},
+\bauthor{\bsnm{Gruenpeter}, \binits{M.}},
+\bauthor{\bsnm{Martinez}, \binits{P.A.}},
+\bauthor{\bsnm{Honeyman}, \binits{T.}}, \betal:
+\batitle{Introducing the fair principles for research software}.
+\bjtitle{Scientific Data}
+\bvolume{9},
+\bfpage{622}
+(\byear{2022})
+\doiurl{10.1038/s41597-022-01710-x}
+\end{barticle}
+\endbibitem
+
+%%% 4
+\bibitem[\protect\citeauthoryear{{FAIR for Research Software Working
+  Group}}{2022}]{FAIR4RS2022Principles}
+\begin{botherref}
+\oauthor{\bsnm{{FAIR for Research Software Working Group}}}:
+FAIR Principles for Research Software (FAIR4RS Principles).
+Zenodo
+(2022).
+\doiurl{10.15497/RDA00068} .
+\url{https://doi.org/10.15497/RDA00068}
+\end{botherref}
+\endbibitem
+
+%%% 5
+\bibitem[\protect\citeauthoryear{Smith
+  et~al.}{2016}]{Smith2016SoftwareCitation}
+\begin{barticle}
+\bauthor{\bsnm{Smith}, \binits{A.M.}},
+\bauthor{\bsnm{Katz}, \binits{D.S.}},
+\bauthor{\bsnm{Niemeyer}, \binits{K.E.}},
+\bauthor{\bsnm{Group}, \binits{F.S.C.W.}}:
+\batitle{Software citation principles}.
+\bjtitle{PeerJ Computer Science}
+\bvolume{2},
+\bfpage{86}
+(\byear{2016})
+\doiurl{10.7717/peerj-cs.86}
+\end{barticle}
+\endbibitem
+
+%%% 6
+\bibitem[\protect\citeauthoryear{{Papers with
+  Code}}{2026}]{PapersWithCodeWebsite}
+\begin{botherref}
+\oauthor{\bsnm{{Papers with Code}}}:
+Papers with Code.
+\url{https://paperswithcode.com/}.
+Accessed 2026-07-13
+(2026)
+\end{botherref}
+\endbibitem
+
+%%% 7
+\bibitem[\protect\citeauthoryear{Ison et~al.}{2013}]{Ison2013EDAM}
+\begin{barticle}
+\bauthor{\bsnm{Ison}, \binits{J.}},
+\bauthor{\bsnm{Kalaš}, \binits{M.}},
+\bauthor{\bsnm{Jonassen}, \binits{I.}}, \betal:
+\batitle{Edam: an ontology of bioinformatics operations, types of data and
+  identifiers, topics and formats}.
+\bjtitle{Journal of Biomedical Semantics}
+\bvolume{4},
+\bfpage{43}
+(\byear{2013})
+\doiurl{10.1186/2041-1480-4-43}
+\end{barticle}
+\endbibitem
+
+%%% 8
+\bibitem[\protect\citeauthoryear{Ison et~al.}{2019}]{Ison2019BioTools}
+\begin{barticle}
+\bauthor{\bsnm{Ison}, \binits{J.}},
+\bauthor{\bsnm{Ienasescu}, \binits{H.}},
+\bauthor{\bsnm{Chmura}, \binits{P.}},
+\bauthor{\bsnm{Raschi}, \binits{E.}},
+\bauthor{\bsnm{Gavras}, \binits{H.}},
+\bauthor{\bsnm{Blankenberg}, \binits{D.}},
+\bauthor{\bsnm{Jimenez}, \binits{R.C.}}, \betal:
+\batitle{The bio.tools registry of software tools and data resources for the
+  life sciences}.
+\bjtitle{Genome Biology}
+\bvolume{20}(\bissue{1}),
+\bfpage{164}
+(\byear{2019})
+\doiurl{10.1186/s13059-019-1772-6}
+\end{barticle}
+\endbibitem
+
+%%% 9
+\bibitem[\protect\citeauthoryear{Ison et~al.}{2021}]{Ison2021BioToolsSchema}
+\begin{botherref}
+\oauthor{\bsnm{Ison}, \binits{J.}},
+\oauthor{\bsnm{Ienasescu}, \binits{H.}},
+\oauthor{\bsnm{Chmura}, \binits{P.}}, et al.:
+biotoolsschema: a formalized schema for bioinformatics software metadata.
+Database
+\textbf{2021}
+(2021)
+\doiurl{10.1093/database/baaa157}
+\end{botherref}
+\endbibitem
+
+%%% 10
+\bibitem[\protect\citeauthoryear{Katz}{2014}]{Katz2014}
+\begin{barticle}
+\bauthor{\bsnm{Katz}, \binits{D.S.}}:
+\batitle{Transitive credit as a means to address social and technological
+  concerns stemming from citation and attribution of digital products}.
+\bjtitle{Journal of Open Research Software}
+\bvolume{2}(\bissue{1}),
+\bfpage{20}
+(\byear{2014})
+\doiurl{10.5334/jors.be}
+\end{barticle}
+\endbibitem
+
+%%% 11
+\bibitem[\protect\citeauthoryear{Manghi et~al.}{2023}]{Manghi2023OpenAIRE}
+\begin{barticle}
+\bauthor{\bsnm{Manghi}, \binits{P.}},
+\bauthor{\bsnm{Atzori}, \binits{C.}},
+\bauthor{\bsnm{Bardi}, \binits{A.}}, \betal:
+\batitle{The openaire research graph: A fair scholarly knowledge graph}.
+\bjtitle{Scientific Data}
+\bvolume{10},
+\bfpage{141}
+(\byear{2023})
+\doiurl{10.1038/s41597-023-01971-9}
+\end{barticle}
+\endbibitem
+
+%%% 12
+\bibitem[\protect\citeauthoryear{Di~Cosmo}{2020}]{DiCosmo2020SWH}
+\begin{bchapter}
+\bauthor{\bsnm{Di~Cosmo}, \binits{R.}}:
+\bctitle{Archiving and referencing source code with software heritage}.
+In: \bbtitle{International Conference on Mathematical Software (ICMS)}.
+\bsertitle{Lecture Notes in Computer Science},
+vol. \bseriesno{12097},
+pp. \bfpage{362}--\blpage{373}.
+\bpublisher{Springer},
+\blocation{Cham}
+(\byear{2020}).
+\doiurl{10.1007/978-3-030-52200-1_36}
+\end{bchapter}
+\endbibitem
+
+%%% 13
+\bibitem[\protect\citeauthoryear{Jones et~al.}{2019}]{Jones2019CodeMeta}
+\begin{barticle}
+\bauthor{\bsnm{Jones}, \binits{M.B.}},
+\bauthor{\bsnm{Boettiger}, \binits{C.}},
+\bauthor{\bsnm{Mayes}, \binits{A.C.}},
+\bauthor{\bsnm{Smith}, \binits{A.M.}},
+\bauthor{\bsnm{Slaughter}, \binits{P.}},
+\bauthor{\bsnm{Niemeyer}, \binits{K.E.}},
+\bauthor{\bsnm{Gil}, \binits{Y.}},
+\bauthor{\bsnm{Fenner}, \binits{M.}},
+\bauthor{\bsnm{Nowak}, \binits{K.}},
+\bauthor{\bsnm{Hahnel}, \binits{M.}},
+\bauthor{\bsnm{Coy}, \binits{L.}},
+\bauthor{\bsnm{Allen}, \binits{A.}},
+\bauthor{\bsnm{Crosas}, \binits{M.}},
+\bauthor{\bsnm{Sands}, \binits{A.}},
+\bauthor{\bsnm{Clune}, \binits{J.}},
+\bauthor{\bsnm{Jackson}, \binits{M.}},
+\bauthor{\bsnm{Michel}, \binits{F.}},
+\bauthor{\bsnm{Goble}, \binits{C.}}:
+\batitle{Codemeta: An exchange schema for software metadata}.
+\bjtitle{Journal of Open Research Software}
+\bvolume{7}(\bissue{1}),
+\bfpage{37}
+(\byear{2019})
+\doiurl{10.5334/jors.247}
+\end{barticle}
+\endbibitem
+
+%%% 14
+\bibitem[\protect\citeauthoryear{Druskat et~al.}{2021}]{Druskat2021CFF}
+\begin{botherref}
+\oauthor{\bsnm{Druskat}, \binits{S.}},
+\oauthor{\bsnm{Spaaks}, \binits{J.}},
+\oauthor{\bsnm{Hong}, \binits{N.C.}}, et al.:
+Citation File Format 1.2.0.
+Specification
+(2021).
+\url{https://citation-file-format.github.io/}
+\end{botherref}
+\endbibitem
+
+%%% 15
+\bibitem[\protect\citeauthoryear{Malone et~al.}{2014}]{Malone2014SWO}
+\begin{barticle}
+\bauthor{\bsnm{Malone}, \binits{J.}},
+\bauthor{\bsnm{Brown}, \binits{A.}},
+\bauthor{\bsnm{Lister}, \binits{A.}}, \betal:
+\batitle{The software ontology (swo): a resource for reproducibility in
+  biomedical data analysis, curation and digital preservation}.
+\bjtitle{Journal of Biomedical Semantics}
+\bvolume{5},
+\bfpage{25}
+(\byear{2014})
+\doiurl{10.1186/2041-1480-5-25}
+\end{barticle}
+\endbibitem
+
+%%% 16
+\bibitem[\protect\citeauthoryear{Soll and Vosgerau}{2017}]{Soll2017ClassifyHub}
+\begin{bchapter}
+\bauthor{\bsnm{Soll}, \binits{M.}},
+\bauthor{\bsnm{Vosgerau}, \binits{M.}}:
+\bctitle{Classifyhub: An algorithm to classify github repositories}.
+In: \bbtitle{KI 2017: Advances in Artificial Intelligence}.
+\bsertitle{Lecture Notes in Computer Science},
+vol. \bseriesno{10505},
+pp. \bfpage{373}--\blpage{379}.
+\bpublisher{Springer},
+\blocation{Cham}
+(\byear{2017}).
+\doiurl{10.1007/978-3-319-67190-1_34}
+\end{bchapter}
+\endbibitem
+
+%%% 17
+\bibitem[\protect\citeauthoryear{Zhang et~al.}{2019}]{Zhang2019HiGitClass}
+\begin{bchapter}
+\bauthor{\bsnm{Zhang}, \binits{Y.}},
+\bauthor{\bsnm{Xu}, \binits{F.F.}},
+\bauthor{\bsnm{Li}, \binits{S.}},
+\bauthor{\bsnm{Meng}, \binits{Y.}},
+\bauthor{\bsnm{Wang}, \binits{X.}},
+\bauthor{\bsnm{Li}, \binits{Q.}},
+\bauthor{\bsnm{Han}, \binits{J.}}:
+\bctitle{Higitclass: Keyword-driven hierarchical classification of github
+  repositories}.
+In: \bbtitle{2019 IEEE International Conference on Data Mining (ICDM)},
+\bconflocation{Piscataway, NJ, USA},
+pp. \bfpage{876}--\blpage{885}
+(\byear{2019}).
+\doiurl{10.1109/ICDM.2019.00154} .
+\burl{https://doi.org/10.1109/ICDM.2019.00154}
+\end{bchapter}
+\endbibitem
+
+%%% 18
+\bibitem[\protect\citeauthoryear{Sas and Capiluppi}{2021}]{Sas2021LabelGit}
+\begin{botherref}
+\oauthor{\bsnm{Sas}, \binits{C.}},
+\oauthor{\bsnm{Capiluppi}, \binits{A.}}:
+Labelgit: A dataset for software repositories classification using attributed
+  dependency graphs.
+arXiv preprint arXiv:2103.08890
+(2021)
+\end{botherref}
+\endbibitem
+
+%%% 19
+\bibitem[\protect\citeauthoryear{Prana et~al.}{2019}]{Prana2019README}
+\begin{barticle}
+\bauthor{\bsnm{Prana}, \binits{G.A.A.}},
+\bauthor{\bsnm{Treude}, \binits{C.}},
+\bauthor{\bsnm{Thung}, \binits{F.}},
+\bauthor{\bsnm{Atapattu}, \binits{T.}},
+\bauthor{\bsnm{Lo}, \binits{D.}}:
+\batitle{Categorizing the content of github readme files}.
+\bjtitle{Empirical Software Engineering}
+\bvolume{24},
+\bfpage{1296}--\blpage{1327}
+(\byear{2019})
+\doiurl{10.1007/s10664-019-09691-3}
+\end{barticle}
+\endbibitem
+
+%%% 20
+\bibitem[\protect\citeauthoryear{Tsay et~al.}{2020}]{Tsay2020AIMMX}
+\begin{bchapter}
+\bauthor{\bsnm{Tsay}, \binits{J.}},
+\bauthor{\bsnm{Braz}, \binits{A.}},
+\bauthor{\bsnm{Hirzel}, \binits{M.}},
+\bauthor{\bsnm{Shinnar}, \binits{A.}},
+\bauthor{\bsnm{Mummert}, \binits{T.}}:
+\bctitle{Aimmx: Artificial intelligence model metadata extractor}.
+In: \bbtitle{Proceedings of the 17th International Conference on Mining
+  Software Repositories},
+pp. \bfpage{81}--\blpage{92}.
+\bpublisher{ACM},
+\blocation{New York, NY, USA}
+(\byear{2020}).
+\doiurl{10.1145/3379597.3387448} .
+\burl{https://doi.org/10.1145/3379597.3387448}
+\end{bchapter}
+\endbibitem
+
+%%% 21
+\bibitem[\protect\citeauthoryear{Garijo et~al.}{2019}]{Garijo2019OKGSoft}
+\begin{bchapter}
+\bauthor{\bsnm{Garijo}, \binits{D.}},
+\bauthor{\bsnm{Osorio}, \binits{M.}},
+\bauthor{\bsnm{Khider}, \binits{D.}},
+\bauthor{\bsnm{Ratnakar}, \binits{V.}},
+\bauthor{\bsnm{Gil}, \binits{Y.}}:
+\bctitle{Okg-soft: An open knowledge graph with machine readable scientific
+  software metadata}.
+In: \bbtitle{2019 IEEE 15th International Conference on eScience},
+pp. \bfpage{172}--\blpage{181}.
+\bpublisher{IEEE},
+\blocation{Piscataway, NJ, USA}
+(\byear{2019}).
+\doiurl{10.1109/eScience.2019.00027} .
+\burl{https://doi.org/10.1109/eScience.2019.00027}
+\end{bchapter}
+\endbibitem
+
+%%% 22
+\bibitem[\protect\citeauthoryear{Mao et~al.}{2019}]{Mao2019SoMEF}
+\begin{bchapter}
+\bauthor{\bsnm{Mao}, \binits{A.}},
+\bauthor{\bsnm{Garijo}, \binits{D.}},
+\bauthor{\bsnm{Fakhraei}, \binits{S.}}:
+\bctitle{Somef: A framework for capturing scientific software metadata from its
+  documentation}.
+In: \bbtitle{2019 IEEE International Conference on Big Data (Big Data)},
+pp. \bfpage{3032}--\blpage{3037}.
+\bpublisher{IEEE},
+\blocation{Piscataway, NJ, USA}
+(\byear{2019}).
+\doiurl{10.1109/BigData47090.2019.9006447} .
+\burl{https://doi.org/10.1109/BigData47090.2019.9006447}
+\end{bchapter}
+\endbibitem
+
+%%% 23
+\bibitem[\protect\citeauthoryear{Kelley and
+  Garijo}{2021}]{Kelley2021SoftwareKG}
+\begin{barticle}
+\bauthor{\bsnm{Kelley}, \binits{A.}},
+\bauthor{\bsnm{Garijo}, \binits{D.}}:
+\batitle{A framework for creating knowledge graphs of scientific software
+  metadata}.
+\bjtitle{Quantitative Science Studies}
+\bvolume{2}(\bissue{4}),
+\bfpage{1423}--\blpage{1446}
+(\byear{2021})
+\doiurl{10.1162/qss_a_00167}
+\end{barticle}
+\endbibitem
+
+%%% 24
+\bibitem[\protect\citeauthoryear{Salatino
+  et~al.}{2019}]{Salatino2019CSOClassifier}
+\begin{bchapter}
+\bauthor{\bsnm{Salatino}, \binits{A.A.}},
+\bauthor{\bsnm{Osborne}, \binits{F.}},
+\bauthor{\bsnm{Thanapalasingam}, \binits{T.}},
+\bauthor{\bsnm{Motta}, \binits{E.}}:
+\bctitle{The cso classifier: Ontology-driven detection of research topics in
+  scholarly articles}.
+In: \bbtitle{Theory and Practice of Digital Libraries},
+pp. \bfpage{296}--\blpage{311}.
+\bpublisher{Springer},
+\blocation{Cham}
+(\byear{2019}).
+\doiurl{10.1007/978-3-030-30760-8_20}
+\end{bchapter}
+\endbibitem
+
+%%% 25
+\bibitem[\protect\citeauthoryear{Euzenat and
+  Shvaiko}{2013}]{Euzenat2013OntologyMatching}
+\begin{bbook}
+\bauthor{\bsnm{Euzenat}, \binits{J.}},
+\bauthor{\bsnm{Shvaiko}, \binits{P.}}:
+\bbtitle{Ontology Matching},
+\bedition{2}nd edn.
+\bpublisher{Springer},
+\blocation{Berlin, Heidelberg}
+(\byear{2013}).
+\doiurl{10.1007/978-3-642-38721-0} .
+\burl{https://doi.org/10.1007/978-3-642-38721-0}
+\end{bbook}
+\endbibitem
+
+%%% 26
+\bibitem[\protect\citeauthoryear{Otero-Cerdeira
+  et~al.}{2015}]{Otero2015OntologyMatching}
+\begin{barticle}
+\bauthor{\bsnm{Otero-Cerdeira}, \binits{L.}},
+\bauthor{\bsnm{Rodríguez-Martínez}, \binits{F.J.}},
+\bauthor{\bsnm{Gómez-Rodríguez}, \binits{A.}}:
+\batitle{Ontology matching: A literature review}.
+\bjtitle{Expert Systems with Applications}
+\bvolume{42}(\bissue{2}),
+\bfpage{949}--\blpage{971}
+(\byear{2015})
+\doiurl{10.1016/j.eswa.2014.09.003}
+\end{barticle}
+\endbibitem
+
+%%% 27
+\bibitem[\protect\citeauthoryear{Trojahn
+  et~al.}{2022}]{Trojahn2022Foundational}
+\begin{barticle}
+\bauthor{\bsnm{Trojahn}, \binits{C.}}, \betal:
+\batitle{Foundational ontologies meet ontology matching: A survey}.
+\bjtitle{Semantic Web}
+\bvolume{13}(\bissue{3}),
+\bfpage{449}--\blpage{479}
+(\byear{2022})
+\doiurl{10.3233/SW-210447}
+\end{barticle}
+\endbibitem
+
+\end{thebibliography}
