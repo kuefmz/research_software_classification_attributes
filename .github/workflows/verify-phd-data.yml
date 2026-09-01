@@ -1,0 +1,29 @@
+name: Verify PhD experiment data
+
+on:
+  push:
+    branches:
+      - phd-colab-experiments-2026-09-01
+    paths:
+      - '.github/workflows/verify-phd-data.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Zenodo replication record
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import requests
+          u='https://zenodo.org/api/records/17345363'
+          r=requests.get(u,timeout=60)
+          print('status',r.status_code)
+          print(r.text[:5000])
+          r.raise_for_status()
+          obj=r.json()
+          print('title',obj.get('metadata',{}).get('title'))
+          print('files')
+          for f in obj.get('files',[]):
+              print(f.get('key'), f.get('size'), f.get('links',{}).get('content'))
+          PY
