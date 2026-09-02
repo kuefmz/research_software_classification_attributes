@@ -207,13 +207,13 @@ bio.tools,level2_fine_grained,Safety sciences,24,0.00044429
 bio.tools,level2_fine_grained,DNA packaging,24,0.00044429
 bio.tools,level2_fine_grained,Protein properties,23,0.00042578
 bio.tools,level2_fine_grained,DNA mutation,23,0.00042578
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258fcba880>,22,0.00040726
 bio.tools,level2_fine_grained,Quality affairs,22,0.00040726
 bio.tools,level2_fine_grained,Human genetics,22,0.00040726
 bio.tools,level2_fine_grained,Epistasis,22,0.00040726
 bio.tools,level2_fine_grained,Immunoinformatics,21,0.00038875
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a8af88040>,20,0.00037024
 bio.tools,level2_fine_grained,DNA replication and recombination,20,0.00037024
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886cd620>,20,0.00037024
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258f3b33e0>,20,0.00037024
 bio.tools,level2_fine_grained,Data identity and mapping,19,0.00035173
 bio.tools,level2_fine_grained,Paediatrics,19,0.00035173
 bio.tools,level2_fine_grained,Fluxomics,19,0.00035173
@@ -228,11 +228,10 @@ bio.tools,level2_fine_grained,Vaccinology,17,0.0003147
 bio.tools,level2_fine_grained,Analytical chemistry,17,0.0003147
 bio.tools,level2_fine_grained,Protein variants,17,0.0003147
 bio.tools,level2_fine_grained,Geriatric medicine,17,0.0003147
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a881efbc0>,17,0.0003147
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22dc40>,17,0.0003147
 bio.tools,level2_fine_grained,Data curation and archival,16,0.00029619
 bio.tools,level2_fine_grained,Immunoprecipitation experiment,16,0.00029619
 bio.tools,level2_fine_grained,Protein disordered structure,16,0.00029619
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dc2e0>,16,0.00029619
 bio.tools,level2_fine_grained,Genotyping experiment,14,0.00025917
 bio.tools,level2_fine_grained,Structural genomics,13,0.00024066
 bio.tools,level2_fine_grained,Open science,13,0.00024066
@@ -249,133 +248,137 @@ bio.tools,level2_fine_grained,Parasitology,12,0.00022214
 bio.tools,level2_fine_grained,Synthetic chemistry,12,0.00022214
 bio.tools,level2_fine_grained,Regenerative medicine,12,0.00022214
 bio.tools,level2_fine_grained,ATAC-seq,11,0.00020363
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a893018c0>,11,0.00020363
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc42e0>,11,0.00020363
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a8b736500>,10,0.00018512
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258fcbbae0>,11,0.00020363
 bio.tools,level2_fine_grained,Medicines research and development,10,0.00018512
 bio.tools,level2_fine_grained,Developmental biology,10,0.00018512
 bio.tools,level2_fine_grained,Pure mathematics,10,0.00018512
 bio.tools,level2_fine_grained,Pharmacovigilance,10,0.00018512
 bio.tools,level2_fine_grained,Critical care medicine,10,0.00018512
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbdb3e0>,10,0.00018512
 bio.tools,level2_fine_grained,Tropical medicine,9,0.00016661
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89301540>,9,0.00016661
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258fcb8200>,9,0.00016661
 bio.tools,level2_fine_grained,Data governance,9,0.00016661
 bio.tools,level2_fine_grained,Gynaecology and obstetrics,9,0.00016661
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dce40>,9,0.00016661
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86518ba0>,9,0.00016661
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22dfc0>,9,0.00016661
 bio.tools,level2_fine_grained,Electroencephalography,8,0.0001481
 bio.tools,level2_fine_grained,Animal study,8,0.0001481
 bio.tools,level2_fine_grained,Complementary medicine,8,0.0001481
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc51c0>,8,0.0001481
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x752592baace0>,8,0.0001481
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce93ae0>,8,0.0001481
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce92f80>,8,0.0001481
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22e500>,8,0.0001481
 bio.tools,level2_fine_grained,Lipidomics,7,0.00012958
 bio.tools,level2_fine_grained,Cryogenic electron microscopy,7,0.00012958
 bio.tools,level2_fine_grained,Molecular medicine,7,0.00012958
 bio.tools,level2_fine_grained,Laboratory animal science,7,0.00012958
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a899f98c0>,7,0.00012958
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a8a66c900>,7,0.00012958
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258fcbbca0>,7,0.00012958
 bio.tools,level2_fine_grained,Chemical biology,7,0.00012958
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc6500>,7,0.00012958
 bio.tools,level2_fine_grained,Genome resequencing,6,0.00011107
 bio.tools,level2_fine_grained,Biomaterials,6,0.00011107
 bio.tools,level2_fine_grained,Neutron diffraction,6,0.00011107
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a8a66c740>,6,0.00011107
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258fcb84a0>,6,0.00011107
 bio.tools,level2_fine_grained,Assembly,6,0.00011107
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a899f9700>,6,0.00011107
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75259047b840>,6,0.00011107
 bio.tools,level2_fine_grained,Systems medicine,6,0.00011107
 bio.tools,level2_fine_grained,Freshwater biology,6,0.00011107
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc7bc0>,6,0.00011107
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a858b7d80>,6,0.00011107
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce920a0>,6,0.00011107
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbda180>,6,0.00011107
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b281d20>,6,0.00011107
 bio.tools,level2_fine_grained,Electrocardiography,5,9.256e-05
 bio.tools,level2_fine_grained,Hi-C,5,9.256e-05
 bio.tools,level2_fine_grained,Ribosome Profiling,5,9.256e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a8af89fc0>,5,9.256e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89301a80>,5,9.256e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258f3b2b20>,5,9.256e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258f3b2340>,5,9.256e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258fcbb840>,5,9.256e-05
 bio.tools,level2_fine_grained,RNAi experiment,5,9.256e-05
 bio.tools,level2_fine_grained,Reproductive health,5,9.256e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886ccc80>,5,9.256e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258d3ba180>,5,9.256e-05
 bio.tools,level2_fine_grained,Immunomics,5,9.256e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86518660>,5,9.256e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e8903c0>,5,9.256e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd8820>,5,9.256e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80e420>,5,9.256e-05
 bio.tools,level2_fine_grained,Data protection,4,7.405e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886cf5a0>,4,7.405e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e891460>,4,7.405e-05
 bio.tools,level2_fine_grained,Gender medicine,4,7.405e-05
 bio.tools,level2_fine_grained,Carbon cycle,4,7.405e-05
 bio.tools,level2_fine_grained,Pain medicine,4,7.405e-05
 bio.tools,level2_fine_grained,Metabarcoding,4,7.405e-05
 bio.tools,level2_fine_grained,Veterinary medicine,4,7.405e-05
 bio.tools,level2_fine_grained,Gastroenterology,4,7.405e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a881ee880>,4,7.405e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22c740>,4,7.405e-05
 bio.tools,level2_fine_grained,Next generation sequencing,4,7.405e-05
 bio.tools,level2_fine_grained,Biological networks,4,7.405e-05
 bio.tools,level2_fine_grained,Haematology,4,7.405e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce92ce0>,4,7.405e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce93840>,4,7.405e-05
 bio.tools,level2_fine_grained,Microbial collection,4,7.405e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc67a0>,4,7.405e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86864ba0>,4,7.405e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886ce6c0>,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886cfae0>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd9a80>,4,7.405e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80e5e0>,4,7.405e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e890580>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e8919a0>,3,5.554e-05
 bio.tools,level2_fine_grained,Microfluidics,3,5.554e-05
 bio.tools,level2_fine_grained,Mouse clinic,3,5.554e-05
 bio.tools,level2_fine_grained,Short-read sequencing,3,5.554e-05
 bio.tools,level2_fine_grained,Clone library,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89d65460>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x752590d3edc0>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x752592268900>,3,5.554e-05
 bio.tools,level2_fine_grained,Cancer,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a881ed2a0>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e893060>,3,5.554e-05
 bio.tools,level2_fine_grained,Cytogenetics,3,5.554e-05
 bio.tools,level2_fine_grained,Dermatology,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc4d60>,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc4c80>,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dde00>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce92b20>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce92a40>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22fbc0>,3,5.554e-05
 bio.tools,level2_fine_grained,Dentistry,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc6880>,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85c2b920>,3,5.554e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89302960>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886cf3e0>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a899f8820>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd8c80>,3,5.554e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258f3b0820>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e8912a0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75259047a420>,2,3.702e-05
 bio.tools,level2_fine_grained,Topic,2,3.702e-05
 bio.tools,level2_fine_grained,Acoustics,2,3.702e-05
 bio.tools,level2_fine_grained,Ophthalmology,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258f3b3a00>,2,3.702e-05
 bio.tools,level2_fine_grained,Environmental sciences,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89d65620>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258fcb8e40>,2,3.702e-05
 bio.tools,level2_fine_grained,Bisulfite sequencing,2,3.702e-05
 bio.tools,level2_fine_grained,DNA methylation,2,3.702e-05
 bio.tools,level2_fine_grained,Transcription factors,2,3.702e-05
 bio.tools,level2_fine_grained,Protein families,2,3.702e-05
 bio.tools,level2_fine_grained,Microbiome,2,3.702e-05
 bio.tools,level2_fine_grained,"Ear, nose and throat medicine",2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86d34ac0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258d3ba880>,2,3.702e-05
 bio.tools,level2_fine_grained,Medical biotechnology,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86d34820>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258d3ba5e0>,2,3.702e-05
 bio.tools,level2_fine_grained,Hepatic and biliary medicine,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dc660>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc5d20>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86864f20>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86d34200>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86d373e0>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc43c0>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dc200>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc6a40>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc6ea0>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc7920>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86866b20>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85e6bd80>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86518200>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc7ca0>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a852efa00>,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a852efbc0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22e420>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbdace0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258d3b9620>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce91e00>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce92180>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce93760>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce93e60>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd92a0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd9620>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd97e0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258d3b99a0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258d3bb3e0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80c040>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80dfc0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b7f99a0>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ac15b60>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ac15540>,2,3.702e-05
 bio.tools,level2_fine_grained,Opthalmology,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85113140>,2,3.702e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258a8a9000>,2,3.702e-05
 bio.tools,level2_fine_grained,Sequences,2,3.702e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886cef80>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886cfe60>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e890e40>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e891d20>,1,1.851e-05
 bio.tools,level2_fine_grained,Metabolic engineering,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a8a66f840>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a893004a0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89300200>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a893009e0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258fcbac00>,1,1.851e-05
 bio.tools,level2_fine_grained,Data rescue,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886cda80>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886cdc40>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258f3b3920>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x752590d3eea0>,1,1.851e-05
 bio.tools,level2_fine_grained,Proteome,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a881ef4c0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22d380>,1,1.851e-05
 bio.tools,level2_fine_grained,Probability,1,1.851e-05
 bio.tools,level2_fine_grained,Amino acids,1,1.851e-05
 bio.tools,level2_fine_grained,Peptides,1,1.851e-05
@@ -394,60 +397,54 @@ bio.tools,level2_fine_grained,methyl-seq,1,1.851e-05
 bio.tools,level2_fine_grained,Protein structure,1,1.851e-05
 bio.tools,level2_fine_grained,Protein hydropathy,1,1.851e-05
 bio.tools,level2_fine_grained,Drug targets,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a881ecc80>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e892a40>,1,1.851e-05
 bio.tools,level2_fine_grained,Animals,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89300e40>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a881ee340>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89303bc0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86d350e0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a881ef5a0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dc820>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dcba0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86d35540>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a89d658c0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86867060>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86d37760>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc50e0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a886ce180>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dc740>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc7300>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc7760>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc7e60>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75259047b5a0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e893bc0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258f3b20a0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258d3baea0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22d460>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22e5e0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e22eea0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258d3bb300>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce90040>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80cf20>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce91620>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce92ea0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce93220>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd9700>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd9d20>,1,1.851e-05
 bio.tools,level2_fine_grained,Cell culture collection,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86864580>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86d342e0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a873dfae0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86865380>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86866260>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86866340>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86519700>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85e68740>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc5460>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86bc6960>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85e6b220>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a881edd20>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86864d60>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86518e40>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a865190e0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a86518c80>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a865199a0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85c2a960>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85c2a7a0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a8651b300>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85c29000>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85c29ee0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85c2b140>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a855051c0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85c2b4c0>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85505620>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258e893ae0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbdb140>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80c2e0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258bff6500>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ce93140>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258bb490e0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258bb49c40>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbda6c0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80eea0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80ea40>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258bb4bca0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b7f8820>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b7f8660>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258bff51c0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258bb4adc0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258c80f760>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b7f9000>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b282f80>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b7f9380>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b2833e0>,1,1.851e-05
 bio.tools,level2_fine_grained,Trauma medicine,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85e6a960>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258b7f97e0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ad3f300>,1,1.851e-05
 bio.tools,level2_fine_grained,Regulatory affairs,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a852ef3e0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ac152a0>,1,1.851e-05
 bio.tools,level2_fine_grained,Protein tertiary structure,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85111380>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a85111700>,1,1.851e-05
-bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x7d3a851134c0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258cbd82e0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ac17140>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258ac174c0>,1,1.851e-05
+bio.tools,level2_fine_grained,<generator object candidate_biotools_records.<locals>.<genexpr> at 0x75258a8a9380>,1,1.851e-05
 bio.tools,level2_fine_grained,SNP,1,1.851e-05
 bio.tools,level2_fine_grained,Protein-ligand interactions,1,1.851e-05
 bio.tools,level2_fine_grained,DNA variation,1,1.851e-05

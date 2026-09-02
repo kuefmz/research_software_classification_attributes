@@ -1,6 +1,8 @@
 source,count_type,count,count_subtype
 papers_with_code,source_records,573165,
 papers_with_code,expanded_observations,573165,
+papers_with_code,labelled_records,452486,
+papers_with_code,github_backed_observations,167690,
 papers_with_code,retained_master_records,146034,
 papers_with_code,level1_records,42692,
 papers_with_code,level2_records,141442,
@@ -136,6 +138,8 @@ papers_with_code,source_records_by_repository_count,1,593
 papers_with_code,source_records_by_publication_expansion_count,573165,1
 bio.tools,source_records,33084,
 bio.tools,expanded_observations,36417,
+bio.tools,labelled_records,36417,
+bio.tools,github_backed_observations,15294,
 bio.tools,retained_master_records,15294,
 bio.tools,level1_records,14935,
 bio.tools,level2_records,15294,

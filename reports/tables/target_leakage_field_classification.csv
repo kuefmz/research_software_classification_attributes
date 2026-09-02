@@ -2,6 +2,9 @@ field,classification,rationale
 source,SOURCE_IDENTIFIER,"Stratification/provenance only, not a predictor."
 source_item_id,SOURCE_IDENTIFIER,Stable source identifier.
 canonical_record_id,SOURCE_IDENTIFIER,Deterministic row identifier.
+software_group_id,SOURCE_IDENTIFIER,Deterministic group identifier for leakage-safe splitting.
+repository_group_id,SOURCE_IDENTIFIER,Deterministic repository group identifier for leakage-safe splitting.
+publication_group_id,SOURCE_IDENTIFIER,Deterministic publication group identifier for leakage-safe splitting.
 repository_url,SOURCE_IDENTIFIER,"Identifier/provenance, not semantic predictor."
 repository_url_normalized,SOURCE_IDENTIFIER,"Identifier/provenance, not semantic predictor."
 publication_identifier,SOURCE_IDENTIFIER,"Identifier/provenance, not semantic predictor."

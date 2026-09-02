@@ -12,13 +12,16 @@ artifacts only.
 | openalex | metadata_error:not_found | 312 |
 | openalex | duplicate_requested_doi_rows | 1 |
 | openalex | metadata_error:400 Client Error: Bad Request for url: https://api.openalex.org/works?filter=doi%3A10.1371%2Fjournal.pone.0016432%7C10.1371%2Fjournal.pone.0016526%7C10.1371%2Fjournal.pone.0017288%7C10.1371%2Fjournal.pone.0017844%7C10.1371%2Fjournal.pone.0019541%7C10.1371%2Fjournal.pone.0019816%7C10.1371%2Fjournal.pone.0020284%7C10.1371%2Fjournal.pone.0020892%7C10.1371%2Fjournal.pone.0021931%7C10.1371%2Fjournal.pone.0022556%7C10.1371%2Fjournal.pone.0023409%7C10.1371%2Fjournal.pone.0023455%7C10.1371%2Fjournal.pone.0023501%7C10.1371%2Fjournal.pone.0023505%7C10.1371%2Fjournal.pone.0023519%7C10.1371%2Fjournal.pone.0024039%7C10.1371%2Fjournal.pone.0024716%7C10.1371%2Fjournal.pone.0025279%7C10.1371%2Fjournal.pone.0025988%7C10.1371%2Fjournal.pone.0026105%7C10.1371%2Fjournal.pone.0026314%7C10.1371%2Fjournal.pone.0026715%7C10.1371%2Fjournal.pone.0026767%7C10.1371%2Fjournal.pone.0026781%7C10.1371%2Fjournal.pone.0027602%7C10.1371%2Fjournal.pone.0028272%7C10.1371%2Fjournal.pone.0029175%7C10.1371%2Fjournal.pone.0029851%7C10.1371%2Fjournal.pone.0030126%7C10.1371%2Fjournal.pone.0030824%7C10.1371%2Fjournal.pone.0031813%7C10.1371%2Fjournal.pone.0032095%7C10.1371%2Fjournal.pone.0032200%7C10.1371%2Fjournal.pone.0032225%7C10.1371%2Fjournal.pone.0032394%7C10.1371%2Fjournal.pone.0034030%7C10.1371%2Fjournal.pone.0034613%7C10.1371%2Fjournal.pone.0034861%7C10.1371%2Fjournal.pone.0035187%7C10.1371%2Fjournal.pone.0035897%7C10.1371%2Fjournal.pone.0036865%7C10.1371%2Fjournal.pone.0036995%7C10.1371%2Fjournal.pone.0037869%7C10.1371%2Fjournal.pone.0038967%7C10.1371%2Fjournal.pone.0040096.pmid%3A22768229%7C10.1371%2Fjournal.pone.0040155%7C10.1371%2Fjournal.pone.0041082%7C10.1371%2Fjournal.pone.0041224%7C10.1371%2Fjournal.pone.0041551%7C10.1371%2Fjournal.pone.0042304&per_page=50&select=id%2Cdoi%2Ctitle%2Cdisplay_name%2Cabstract_inverted_index%2Cpublication_year%2Ctype | 1 |
+| github_artifacts | github_cache_misses | 178932 |
 | github_artifacts | artifact_directories | 53109 |
 | github_artifacts | metadata_files | 53109 |
 | github_artifacts | readme_files | 51502 |
 | github_artifacts | missing_readme_files | 1607 |
+| github_artifacts | github_cache_missing | 1 |
 | somef | somef_json_files | 51502 |
 | somef | manifest:readme:saved_readme | 49777 |
 | somef | somef_success_json_files | 48845 |
+| somef | somef_json_files_with_application_domain | 47740 |
 | somef | manifest:somef:saved_somef_json | 47204 |
 | somef | somef_error_json_files | 2657 |
 | somef | manifest:somef:error_json_written_exception | 2573 |
@@ -36,12 +39,17 @@ available. Mismatches are counted in the machine-readable table.
 
 ## GitHub And README Artifacts
 
-Saved repository artifact folders are counted, including README presence and
-metadata JSON validity. Redirects and repository renames are not recoverable
-without network calls unless already present in saved metadata.
+The frozen GitHub metadata cache at `/home/jenifer/github/research_software_classification_attributes/data/intermediate/github_enrichment/github_repository_cache.jsonl` is read when
+present and merged by normalized repository URL. Saved repository artifact
+folders are then used for local README files and SoMEF JSON. Redirects and
+repository renames are not recoverable without network calls unless already
+present in saved metadata.
 
 ## SoMEF
 
 Saved SoMEF JSON files and manifest statuses are counted. The configured
 threshold in the repository is `0.2`. Exact SoMEF package
-version is reported as unknown unless captured in local artifacts.
+version is reported as unknown unless captured in local artifacts. The saved
+SoMEF schema in this cache does not expose a top-level `keyword` or `keywords`
+field when `somef_json_files_with_top_level_keyword_key` is zero; in that case
+`somef_keywords` remains empty rather than remapping `application_domain`.

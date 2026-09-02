@@ -15,11 +15,14 @@ from src.final_dataset_builder import (
     duplicate_rows,
     edam_map_labels,
     edam_top_level_mappings,
+    label_stats_rows,
+    load_github_metadata_cache,
     missing_reason,
     parse_edam_ontology,
     pipeline_stage_rows,
     retention_reason,
     target_leakage_rows,
+    update_level_view,
     update_record_audits,
     view_record,
 )
@@ -139,12 +142,16 @@ class FinalDatasetBuilderTest(unittest.TestCase):
         self.assertEqual(records[0]["paper_title"], "Publication A")
         self.assertEqual(set(records[0]["high_level_labels"]), {"Biology", "Informatics"})
         self.assertEqual(records[0]["fine_grained_labels"], ["Sequence analysis"])
+        self.assertEqual(records[0]["software_group_id"], records[1]["software_group_id"])
 
     def test_duplicate_detection_and_view_derivation(self):
         audit = BuildAudit()
         record = {
             "source": "papers_with_code",
             "canonical_record_id": "same",
+            "software_group_id": "sw",
+            "repository_group_id": "repo",
+            "publication_group_id": "pub",
             "source_item_id": "src",
             "source_record_hash": "hash",
             "repository_url_normalized": "https://github.com/a/b",
@@ -159,10 +166,91 @@ class FinalDatasetBuilderTest(unittest.TestCase):
         self.assertTrue(view["is_single_label"])
         self.assertFalse(view["is_multi_label"])
 
+    def test_label_statistics_denominators_use_level_cohorts(self):
+        audit = BuildAudit()
+        records = [
+            {
+                "source": "papers_with_code",
+                "canonical_record_id": "level1-only",
+                "repository_url_normalized": "https://github.com/a/one",
+                "high_level_labels": ["Area"],
+                "fine_grained_labels": [],
+            },
+            {
+                "source": "papers_with_code",
+                "canonical_record_id": "level2-only",
+                "repository_url_normalized": "https://github.com/a/two",
+                "high_level_labels": [],
+                "fine_grained_labels": ["Task"],
+            },
+        ]
+        for record in records:
+            update_record_audits(record, audit, include_missing=True)
+            update_level_view(audit, record, "level1_high_level", record["high_level_labels"])
+            update_level_view(audit, record, "level2_fine_grained", record["fine_grained_labels"])
+
+        stats = {(row["source"], row["level"]): row for row in label_stats_rows(audit)}
+        self.assertEqual(stats[("papers_with_code", "level1_high_level")]["records"], 1)
+        self.assertEqual(stats[("papers_with_code", "level2_fine_grained")]["records"], 1)
+        self.assertEqual(audit.level1_counts["papers_with_code"], 1)
+        self.assertEqual(audit.level2_counts["papers_with_code"], 1)
+
+    def test_github_cache_fixture_supplies_repository_metadata(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        cache_path = root / "github_repository_cache.jsonl"
+        cache_path.write_text(
+            (
+                '{"repository_url": "https://github.com/Owner/Repo", '
+                '"repository_url_normalized": "https://github.com/Owner/Repo", '
+                '"repository_title": "Repo", '
+                '"repository_description": "Cached description", '
+                '"repository_keywords": ["bioinformatics", "workflow"], '
+                '"readme_content": "# Cached README", '
+                '"error": null}\n'
+            ),
+            encoding="utf-8",
+        )
+        audit = BuildAudit()
+        github_cache = load_github_metadata_cache(cache_path, audit)
+        loader = ArtifactLoader(root / "repository_artifacts", audit, github_cache=github_cache)
+        summary = loader.summary_for("https://github.com/Owner/Repo.git")
+        self.assertEqual(summary.repository_title, "Repo")
+        self.assertEqual(summary.repository_description, "Cached description")
+        self.assertEqual(summary.repository_keywords, ["bioinformatics", "workflow"])
+        self.assertEqual(summary.readme_content, "# Cached README")
+        self.assertEqual(audit.github_artifact_stats["github_cache_hits"], 1)
+
+    def test_group_ids_are_deterministic_and_order_independent(self):
+        raw_a = {
+            "paper_url": "https://paperswithcode.com/paper/a",
+            "github_repo": "https://github.com/example/shared",
+            "main_collection_areas": ["Area"],
+            "papers with code categories": {"tasks": ["Task A"]},
+            "paper_title": "Paper A",
+        }
+        raw_b = {
+            "paper_url": "https://paperswithcode.com/paper/b",
+            "github_repo": "https://github.com/example/shared.git",
+            "main_collection_areas": ["Area"],
+            "papers with code categories": {"tasks": ["Task B"]},
+            "paper_title": "Paper B",
+        }
+        forward = [candidate_pwc_record(raw, self.artifact_loader()) for raw in [raw_a, raw_b]]
+        reverse = [candidate_pwc_record(raw, self.artifact_loader()) for raw in [raw_b, raw_a]]
+        self.assertEqual(len({record["repository_group_id"] for record in forward}), 1)
+        self.assertEqual(len({record["software_group_id"] for record in forward}), 1)
+        self.assertEqual(
+            {record["source_item_id"]: record["repository_group_id"] for record in forward},
+            {record["source_item_id"]: record["repository_group_id"] for record in reverse},
+        )
+
     def test_filter_accounting_and_missing_reasons(self):
         audit = BuildAudit()
         audit.raw_counts["papers_with_code"] = 3
         audit.expanded_counts["papers_with_code"] = 3
+        audit.labelled_counts["papers_with_code"] = 2
         audit.retained_counts["papers_with_code"] = 2
         audit.removal_reasons["papers_with_code"]["missing_github_repository"] = 1
         audit.level1_counts["papers_with_code"] = 1
@@ -186,6 +274,7 @@ class FinalDatasetBuilderTest(unittest.TestCase):
         self.assertEqual(leakage["pwc_task_labels"], "TARGET")
         self.assertEqual(leakage["edam_topic_labels"], "TARGET")
         self.assertEqual(leakage["repository_url"], "SOURCE_IDENTIFIER")
+        self.assertEqual(leakage["software_group_id"], "SOURCE_IDENTIFIER")
 
 
 if __name__ == "__main__":

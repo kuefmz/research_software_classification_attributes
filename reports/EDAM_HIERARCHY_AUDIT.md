@@ -11,7 +11,7 @@
 
 ## Mapping Summary
 
-- Original distinct EDAM topic labels observed: 625
+- Original distinct EDAM topic labels observed: 619
 - Resulting distinct high-level EDAM labels observed: 12
 - Records with multiple mapped high-level EDAM labels: 21820
 - Detailed EDAM topics with multiple high-level mappings in ontology table: 26

@@ -1,0 +1,23 @@
+source,cohort,count,denominator,denominator_count,proportion_of_denominator,definition
+papers_with_code,source_universe,573165,,,,Frozen source records before DOI expansion or filtering.
+papers_with_code,expanded_source_observations,573165,source_universe,573165,1.0,"Source observations after source-specific expansion, including bio.tools DOI expansion."
+papers_with_code,labelled_records,452486,expanded_source_observations,573165,0.78945155,"Expanded observations with at least one Level 1 or Level 2 target label, before the GitHub filter."
+papers_with_code,github_backed_observations,167690,expanded_source_observations,573165,0.29256846,"Expanded observations with a normalized GitHub repository URL, before the target-label filter."
+papers_with_code,github_backed_research_software_analysis_cohort,146034,labelled_records,452486,0.32273706,Retained canonical cohort requiring both a normalized GitHub repository and at least one target label.
+papers_with_code,level1_cohort,42692,github_backed_research_software_analysis_cohort,146034,0.29234288,Retained records with at least one Level 1 target label.
+papers_with_code,level2_cohort,141442,github_backed_research_software_analysis_cohort,146034,0.96855527,Retained records with at least one Level 2 target label.
+papers_with_code,publication_title_available_cohort,146034,github_backed_research_software_analysis_cohort,146034,1.0,Retained records with a publication title.
+papers_with_code,publication_abstract_available_cohort,145693,github_backed_research_software_analysis_cohort,146034,0.99766493,Retained records with a publication abstract.
+papers_with_code,readme_available_cohort,46915,github_backed_research_software_analysis_cohort,146034,0.3212608,Retained records with saved README content.
+papers_with_code,somef_description_available_cohort,40772,github_backed_research_software_analysis_cohort,146034,0.27919526,Retained records with a SoMEF-derived description.
+bio.tools,source_universe,33084,,,,Frozen source records before DOI expansion or filtering.
+bio.tools,expanded_source_observations,36417,source_universe,33084,1.10074356,"Source observations after source-specific expansion, including bio.tools DOI expansion."
+bio.tools,labelled_records,36417,expanded_source_observations,36417,1.0,"Expanded observations with at least one Level 1 or Level 2 target label, before the GitHub filter."
+bio.tools,github_backed_observations,15294,expanded_source_observations,36417,0.4199687,"Expanded observations with a normalized GitHub repository URL, before the target-label filter."
+bio.tools,github_backed_research_software_analysis_cohort,15294,labelled_records,36417,0.4199687,Retained canonical cohort requiring both a normalized GitHub repository and at least one target label.
+bio.tools,level1_cohort,14935,github_backed_research_software_analysis_cohort,15294,0.97652674,Retained records with at least one Level 1 target label.
+bio.tools,level2_cohort,15294,github_backed_research_software_analysis_cohort,15294,1.0,Retained records with at least one Level 2 target label.
+bio.tools,publication_title_available_cohort,14221,github_backed_research_software_analysis_cohort,15294,0.92984177,Retained records with a publication title.
+bio.tools,publication_abstract_available_cohort,13159,github_backed_research_software_analysis_cohort,15294,0.86040277,Retained records with a publication abstract.
+bio.tools,readme_available_cohort,13570,github_backed_research_software_analysis_cohort,15294,0.88727606,Retained records with saved README content.
+bio.tools,somef_description_available_cohort,12349,github_backed_research_software_analysis_cohort,15294,0.80744083,Retained records with a SoMEF-derived description.

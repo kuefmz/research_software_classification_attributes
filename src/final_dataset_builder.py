@@ -52,6 +52,9 @@ CANONICAL_FIELDS = [
     "source",
     "source_item_id",
     "canonical_record_id",
+    "software_group_id",
+    "repository_group_id",
+    "publication_group_id",
     "unit_of_analysis",
     "software_name",
     "software_description",
@@ -131,6 +134,7 @@ class BuildPaths:
     edam_owl: Path = config.RAW_DATA_DIR / "edam" / "EDAM.owl"
     openalex_cache_jsonl: Path = config.BIOTOOLS_PUBLICATION_CACHE_JSONL
     repository_artifacts_dir: Path = config.REPOSITORY_ARTIFACTS_DIR
+    github_cache_jsonl: Path = config.GITHUB_CACHE_JSONL
     somef_manifest_jsonl: Path = config.SOMEF_RUN_MANIFEST_JSONL
     release_dir: Path = config.FINAL_DATA_DIR / "paper_v1"
     mappings_dir: Path = config.DATA_DIR / "mappings"
@@ -211,6 +215,8 @@ class BuildAudit:
 
     raw_counts: Counter[str] = field(default_factory=Counter)
     expanded_counts: Counter[str] = field(default_factory=Counter)
+    labelled_counts: Counter[str] = field(default_factory=Counter)
+    github_backed_counts: Counter[str] = field(default_factory=Counter)
     retained_counts: Counter[str] = field(default_factory=Counter)
     level1_counts: Counter[str] = field(default_factory=Counter)
     level2_counts: Counter[str] = field(default_factory=Counter)
@@ -229,6 +235,10 @@ class BuildAudit:
     repo_sources: dict[str, Counter[str]] = field(default_factory=lambda: defaultdict(Counter))
     doi_sources: dict[str, Counter[str]] = field(default_factory=lambda: defaultdict(Counter))
     name_sources: dict[str, Counter[str]] = field(default_factory=lambda: defaultdict(Counter))
+    retained_repo_sources: dict[str, Counter[str]] = field(default_factory=lambda: defaultdict(Counter))
+    retained_doi_sources: dict[str, Counter[str]] = field(default_factory=lambda: defaultdict(Counter))
+    group_members: dict[tuple[str, str], Counter[str]] = field(default_factory=lambda: defaultdict(Counter))
+    group_record_keys: dict[str, list[dict[str, str | None]]] = field(default_factory=lambda: defaultdict(list))
     pwc_task_area_counts: Counter[tuple[str, str]] = field(default_factory=Counter)
     pwc_task_records: Counter[str] = field(default_factory=Counter)
     pwc_area_records: Counter[str] = field(default_factory=Counter)
@@ -350,6 +360,66 @@ def deterministic_id(*parts: Any, length: int = 24) -> str:
 
     raw = "\x1f".join(clean_text(part) or "" for part in parts)
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:length]
+
+
+def stable_group_id(group_type: str, identity: str | None) -> str | None:
+    """Create a stable group identifier from an exact normalized identity."""
+
+    normalized = clean_text(identity)
+    if not normalized:
+        return None
+    return deterministic_id(group_type, normalized)
+
+
+def repository_group_id(repository_url: Any) -> str | None:
+    normalized = normalize_github_url(clean_text(repository_url)) or clean_text(repository_url)
+    return stable_group_id("repository_group", normalized)
+
+
+def publication_group_identity(
+    doi: Any,
+    publication_url: Any,
+    publication_identifier: Any,
+    paper_title: Any,
+) -> str | None:
+    normalized_doi = normalize_doi(doi) or normalize_doi(publication_identifier) or normalize_doi(publication_url)
+    if normalized_doi:
+        return f"doi:{normalized_doi}"
+    url = clean_text(publication_url)
+    if url:
+        return f"url:{url.rstrip('/')}"
+    identifier = clean_text(publication_identifier)
+    if identifier:
+        return f"identifier:{identifier.casefold()}"
+    title = normalized_name(paper_title)
+    if title:
+        return f"title:{title}"
+    return None
+
+
+def publication_group_id(
+    doi: Any,
+    publication_url: Any,
+    publication_identifier: Any,
+    paper_title: Any,
+) -> str | None:
+    return stable_group_id(
+        "publication_group",
+        publication_group_identity(doi, publication_url, publication_identifier, paper_title),
+    )
+
+
+def biotools_software_group_id(biotools_id: Any) -> str | None:
+    identifier = clean_text(biotools_id)
+    return stable_group_id("software_group", f"bio.tools:{identifier}" if identifier else None)
+
+
+def pwc_software_group_id(repository_url: Any, source_item_id: Any) -> str | None:
+    repository = normalize_github_url(clean_text(repository_url)) or clean_text(repository_url)
+    if repository:
+        return stable_group_id("software_group", f"repository:{repository}")
+    source_id = clean_text(source_item_id)
+    return stable_group_id("software_group", f"papers_with_code_source:{source_id}" if source_id else None)
 
 
 def normalized_name(value: Any) -> str | None:
@@ -687,12 +757,78 @@ def load_openalex_cache(path: Path, audit: BuildAudit) -> dict[str, dict[str, An
     return cache
 
 
+def summary_from_github_cache_row(row: Mapping[str, Any]) -> ArtifactSummary:
+    summary = ArtifactSummary()
+    summary.repository_title = clean_text(row.get("repository_title"))
+    summary.repository_description = clean_markup_text(row.get("repository_description"))
+    summary.repository_keywords = clean_list(row.get("repository_keywords") or row.get("topics"))
+    readme_content = row.get("readme_content")
+    if isinstance(readme_content, str) and readme_content.strip():
+        summary.readme_content = readme_content
+    summary.metadata_error = clean_text(row.get("error"))
+    return summary
+
+
+def copy_artifact_summary(summary: ArtifactSummary) -> ArtifactSummary:
+    return ArtifactSummary(
+        repository_title=summary.repository_title,
+        repository_description=summary.repository_description,
+        repository_keywords=list(summary.repository_keywords),
+        readme_content=summary.readme_content,
+        readme_path=summary.readme_path,
+        somef_description=summary.somef_description,
+        somef_keywords=list(summary.somef_keywords),
+        somef_json_path=summary.somef_json_path,
+        somef_error=summary.somef_error,
+        metadata_error=summary.metadata_error,
+    )
+
+
+def load_github_metadata_cache(path: Path, audit: BuildAudit) -> dict[str, ArtifactSummary]:
+    """Load the frozen GitHub metadata cache without making API requests."""
+
+    cache: dict[str, ArtifactSummary] = {}
+    if not path.exists():
+        audit.github_artifact_stats["github_cache_missing"] += 1
+        return cache
+
+    for row in read_jsonl(path):
+        audit.github_artifact_stats["github_cache_rows"] += 1
+        normalized = row.get("repository_url_normalized") or normalize_github_url(row.get("repository_url"))
+        normalized = clean_text(normalized)
+        if not normalized:
+            audit.github_artifact_stats["github_cache_rows_without_normalized_url"] += 1
+            continue
+        if normalized in cache:
+            audit.github_artifact_stats["github_cache_duplicate_repository_rows"] += 1
+        summary = summary_from_github_cache_row(row)
+        if summary.repository_title:
+            audit.github_artifact_stats["github_cache_repository_title_values"] += 1
+        if summary.repository_description:
+            audit.github_artifact_stats["github_cache_repository_description_values"] += 1
+        if summary.repository_keywords:
+            audit.github_artifact_stats["github_cache_repository_keyword_values"] += 1
+        if summary.readme_content:
+            audit.github_artifact_stats["github_cache_readme_values"] += 1
+        if summary.metadata_error:
+            audit.github_artifact_stats[f"github_cache_error:{summary.metadata_error}"] += 1
+        cache[normalized] = summary
+    return cache
+
+
 class ArtifactLoader:
     """Lazy loader for saved GitHub README and SoMEF artifacts."""
 
-    def __init__(self, root: Path, audit: BuildAudit, max_cache_size: int = 2048) -> None:
+    def __init__(
+        self,
+        root: Path,
+        audit: BuildAudit,
+        github_cache: Mapping[str, ArtifactSummary] | None = None,
+        max_cache_size: int = 2048,
+    ) -> None:
         self.root = root
         self.audit = audit
+        self.github_cache = github_cache or {}
         self.max_cache_size = max_cache_size
         self.cache: dict[str, ArtifactSummary] = {}
         self.order: list[str] = []
@@ -718,16 +854,23 @@ class ArtifactLoader:
         metadata_path = artifact_dir / "metadata.json"
         readme_path = artifact_dir / "README.md"
         somef_path = artifact_dir / "somef.json"
-        summary = ArtifactSummary()
+        cached = self.github_cache.get(normalized)
+        if cached:
+            self.audit.github_artifact_stats["github_cache_hits"] += 1
+            summary = copy_artifact_summary(cached)
+        else:
+            self.audit.github_artifact_stats["github_cache_misses"] += 1
+            summary = ArtifactSummary()
         if metadata_path.exists():
             try:
                 metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
             except json.JSONDecodeError as exc:
                 metadata = {"error": f"invalid_metadata_json:{exc}"}
-            summary.repository_title = clean_text(metadata.get("repository_title"))
-            summary.repository_description = clean_markup_text(metadata.get("repository_description"))
-            summary.repository_keywords = clean_list(metadata.get("repository_keywords") or metadata.get("topics"))
-            summary.metadata_error = clean_text(metadata.get("error"))
+            summary.repository_title = summary.repository_title or clean_text(metadata.get("repository_title"))
+            summary.repository_description = summary.repository_description or clean_markup_text(metadata.get("repository_description"))
+            if not summary.repository_keywords:
+                summary.repository_keywords = clean_list(metadata.get("repository_keywords") or metadata.get("topics"))
+            summary.metadata_error = summary.metadata_error or clean_text(metadata.get("error"))
         if readme_path.exists():
             summary.readme_path = str(readme_path)
             summary.readme_content = readme_path.read_text(encoding="utf-8", errors="replace")
@@ -780,6 +923,10 @@ def audit_repository_artifacts(paths: BuildPaths, audit: BuildAudit) -> None:
                     audit.somef_stats["somef_error_json_files"] += 1
                 elif isinstance(raw, dict):
                     audit.somef_stats["somef_success_json_files"] += 1
+                if isinstance(raw, dict) and any("keyword" in key.casefold() for key in raw):
+                    audit.somef_stats["somef_json_files_with_top_level_keyword_key"] += 1
+                if isinstance(raw, dict) and raw.get("application_domain"):
+                    audit.somef_stats["somef_json_files_with_application_domain"] += 1
             except json.JSONDecodeError:
                 audit.somef_stats["invalid_somef_json"] += 1
         else:
@@ -875,6 +1022,22 @@ def missing_reason(record: Mapping[str, Any], field: str) -> str:
     return "empty_after_cleaning"
 
 
+def has_target_labels(record: Mapping[str, Any]) -> bool:
+    return bool(clean_list(record.get("high_level_labels")) or clean_list(record.get("fine_grained_labels")))
+
+
+def has_github_repository(record: Mapping[str, Any]) -> bool:
+    return bool(clean_text(record.get("repository_url_normalized")))
+
+
+def update_candidate_cohort_audits(record: Mapping[str, Any], audit: BuildAudit) -> None:
+    source = str(record.get("source"))
+    if has_target_labels(record):
+        audit.labelled_counts[source] += 1
+    if has_github_repository(record):
+        audit.github_backed_counts[source] += 1
+
+
 def update_record_audits(record: Mapping[str, Any], audit: BuildAudit, include_missing: bool) -> None:
     source = str(record.get("source"))
     example = str(record.get("canonical_record_id") or record.get("source_item_id"))
@@ -904,14 +1067,39 @@ def update_record_audits(record: Mapping[str, Any], audit: BuildAudit, include_m
         return
 
     audit.canonical_ids.add(clean_text(record.get("canonical_record_id")), example)
-    for label in clean_list(record.get("high_level_labels")):
+    high_labels = clean_list(record.get("high_level_labels"))
+    fine_labels = clean_list(record.get("fine_grained_labels"))
+    for label in high_labels:
         audit.label_support[(source, "level1_high_level")][label] += 1
-    for label in clean_list(record.get("fine_grained_labels")):
+    for label in fine_labels:
         audit.label_support[(source, "level2_fine_grained")][label] += 1
-    audit.labels_per_record[(source, "level1_high_level")].append(len(clean_list(record.get("high_level_labels"))))
-    audit.labels_per_record[(source, "level2_fine_grained")].append(len(clean_list(record.get("fine_grained_labels"))))
+    if high_labels:
+        audit.labels_per_record[(source, "level1_high_level")].append(len(high_labels))
+    if fine_labels:
+        audit.labels_per_record[(source, "level2_fine_grained")].append(len(fine_labels))
 
     audit.rows_by_source[source] += 1
+    for group_type, field_name in [
+        ("software", "software_group_id"),
+        ("repository", "repository_group_id"),
+        ("publication", "publication_group_id"),
+    ]:
+        group_id = clean_text(record.get(field_name))
+        if group_id:
+            audit.group_members[(source, group_type)][group_id] += 1
+    audit.group_record_keys[source].append(
+        {
+            "software": clean_text(record.get("software_group_id")),
+            "repository": clean_text(record.get("repository_group_id")),
+            "publication": clean_text(record.get("publication_group_id")),
+        }
+    )
+    repo = clean_text(record.get("repository_url_normalized"))
+    if repo:
+        audit.retained_repo_sources[repo][source] += 1
+    doi = normalize_doi(record.get("doi"))
+    if doi:
+        audit.retained_doi_sources[doi][source] += 1
     for field_name in MISSINGNESS_FIELDS:
         if record_value_present(record.get(field_name)):
             audit.present[(source, field_name)] += 1
@@ -957,16 +1145,26 @@ def candidate_pwc_record(raw: Mapping[str, Any], artifact_loader: ArtifactLoader
     source_item_id = clean_text(raw.get("paper_url")) or clean_text(raw.get("arxiv_id")) or deterministic_id(
         "papers_with_code", raw.get("paper_title"), publication_url
     )
+    paper_title = clean_markup_text(raw.get("paper_title"))
+    publication_identifier = doi_values[0] if doi_values else clean_text(raw.get("arxiv_id"))
     row = {
         "source": "papers_with_code",
         "source_item_id": source_item_id,
         "canonical_record_id": deterministic_id("papers_with_code", source_item_id, repository_url, publication_url),
+        "software_group_id": pwc_software_group_id(repository_url, source_item_id),
+        "repository_group_id": repository_group_id(repository_url),
+        "publication_group_id": publication_group_id(
+            doi_values[0] if doi_values else None,
+            publication_url,
+            publication_identifier,
+            paper_title,
+        ),
         "unit_of_analysis": "papers_with_code_source_paper_record",
         "software_name": None,
         "software_description": None,
-        "paper_title": clean_markup_text(raw.get("paper_title")),
+        "paper_title": paper_title,
         "paper_abstract": clean_markup_text(raw.get("abstract") or raw.get("short_abstract")),
-        "publication_identifier": doi_values[0] if doi_values else clean_text(raw.get("arxiv_id")),
+        "publication_identifier": publication_identifier,
         "publication_url": publication_url,
         "doi": doi_values[0] if doi_values else None,
         "repository_url": repository_url,
@@ -1036,16 +1234,25 @@ def candidate_biotools_records(
             paper_title = clean_markup_text(metadata.get("paper_title")) or paper_title
             paper_abstract = clean_markup_text(metadata.get("paper_abstract")) or paper_abstract
         source_item_id = f"{biotools_id}::doi::{doi}" if doi else str(biotools_id)
+        publication_identifier = doi or clean_text(flat_row.get("pmid")) or clean_text(flat_row.get("pmcid"))
         row = {
             "source": "bio.tools",
             "source_item_id": source_item_id,
             "canonical_record_id": deterministic_id("bio.tools", biotools_id, doi or "no_doi", repository_url),
+            "software_group_id": biotools_software_group_id(biotools_id),
+            "repository_group_id": repository_group_id(repository_url),
+            "publication_group_id": publication_group_id(
+                doi,
+                doi_url(doi) if doi else None,
+                publication_identifier,
+                paper_title,
+            ),
             "unit_of_analysis": "biotools_tool_publication_observation" if doi else "biotools_tool_observation_without_doi",
             "software_name": clean_text(flat_row.get("name") or (raw_tool or {}).get("name")),
             "software_description": clean_markup_text(flat_row.get("description") or (raw_tool or {}).get("description")),
             "paper_title": paper_title,
             "paper_abstract": paper_abstract,
-            "publication_identifier": doi or clean_text(flat_row.get("pmid")) or clean_text(flat_row.get("pmcid")),
+            "publication_identifier": publication_identifier,
             "publication_url": doi_url(doi) if doi else None,
             "doi": doi,
             "repository_url": repository_url,
@@ -1087,9 +1294,9 @@ def candidate_biotools_records(
 
 
 def retention_reason(record: Mapping[str, Any]) -> str:
-    if not record.get("repository_url_normalized"):
+    if not has_github_repository(record):
         return "missing_github_repository"
-    if not clean_list(record.get("high_level_labels")) and not clean_list(record.get("fine_grained_labels")):
+    if not has_target_labels(record):
         return "missing_all_target_labels"
     return "retained"
 
@@ -1139,8 +1346,9 @@ def build_datasets(paths: BuildPaths, audit: BuildAudit) -> dict[str, Any]:
     write_csv_rows(paths.mappings_dir / "edam_detailed_to_high_level.csv", edam_mapping_rows)
 
     openalex_cache = load_openalex_cache(paths.openalex_cache_jsonl, audit)
+    github_cache = load_github_metadata_cache(paths.github_cache_jsonl, audit)
     audit_repository_artifacts(paths, audit)
-    artifact_loader = ArtifactLoader(paths.repository_artifacts_dir, audit)
+    artifact_loader = ArtifactLoader(paths.repository_artifacts_dir, audit, github_cache=github_cache)
 
     raw_biotools = raw_biotools_lookup(paths.biotools_raw_jsonl)
 
@@ -1162,6 +1370,7 @@ def build_datasets(paths: BuildPaths, audit: BuildAudit) -> dict[str, Any]:
                 )
             add_pwc_hierarchy_audit(record, audit)
             update_record_audits(record, audit, include_missing=False)
+            update_candidate_cohort_audits(record, audit)
             reason = retention_reason(record)
             if reason != "retained":
                 audit.removal_reasons["papers_with_code"][reason] += 1
@@ -1205,6 +1414,7 @@ def build_datasets(paths: BuildPaths, audit: BuildAudit) -> dict[str, Any]:
                 if len(clean_list(record.get("edam_top_level_labels"))) > 1:
                     audit.edam_record_multi_parent_count += 1
                 update_record_audits(record, audit, include_missing=False)
+                update_candidate_cohort_audits(record, audit)
                 reason = retention_reason(record)
                 if reason != "retained":
                     audit.removal_reasons["bio.tools"][reason] += 1
@@ -1293,6 +1503,8 @@ def pipeline_stage_rows(audit: BuildAudit) -> list[dict[str, Any]]:
     for source in ("papers_with_code", "bio.tools"):
         raw = audit.raw_counts[source]
         expanded = audit.expanded_counts[source]
+        labelled = audit.labelled_counts[source]
+        retained = audit.retained_counts[source]
         rows.append(
             {
                 "stage": "source_to_observation_expansion",
@@ -1304,33 +1516,28 @@ def pipeline_stage_rows(audit: BuildAudit) -> list[dict[str, Any]]:
                 "removal_reason": "not_applicable",
             }
         )
-        retained = audit.retained_counts[source]
-        removed_total = expanded - retained
-        if audit.removal_reasons[source]:
-            for reason, count in audit.removal_reasons[source].items():
-                rows.append(
-                    {
-                        "stage": "canonical_master_filter",
-                        "source": source,
-                        "input_records": expanded,
-                        "output_records": retained,
-                        "added_by_expansion": 0,
-                        "removed_records": count,
-                        "removal_reason": reason,
-                    }
-                )
-        else:
-            rows.append(
-                {
-                    "stage": "canonical_master_filter",
-                    "source": source,
-                    "input_records": expanded,
-                    "output_records": retained,
-                    "added_by_expansion": 0,
-                    "removed_records": removed_total,
-                    "removal_reason": "none",
-                }
-            )
+        rows.append(
+            {
+                "stage": "labelled_record_filter",
+                "source": source,
+                "input_records": expanded,
+                "output_records": labelled,
+                "added_by_expansion": 0,
+                "removed_records": expanded - labelled,
+                "removal_reason": "missing_all_target_labels" if expanded != labelled else "none",
+            }
+        )
+        rows.append(
+            {
+                "stage": "github_backed_canonical_filter",
+                "source": source,
+                "input_records": labelled,
+                "output_records": retained,
+                "added_by_expansion": 0,
+                "removed_records": labelled - retained,
+                "removal_reason": "missing_github_repository" if labelled != retained else "none",
+            }
+        )
         for level, output_count in [
             ("level1_high_level", audit.level1_counts[source]),
             ("level2_fine_grained", audit.level2_counts[source]),
@@ -1349,6 +1556,216 @@ def pipeline_stage_rows(audit: BuildAudit) -> list[dict[str, Any]]:
                     "removal_reason": "missing_target_labels_for_level" if missing_count else "none",
                 }
             )
+    return rows
+
+
+def cohort_count_rows(audit: BuildAudit) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+
+    def add(
+        source: str,
+        cohort: str,
+        count: int,
+        denominator: str | None,
+        denominator_count: int | None,
+        definition: str,
+    ) -> None:
+        rows.append(
+            {
+                "source": source,
+                "cohort": cohort,
+                "count": count,
+                "denominator": denominator,
+                "denominator_count": denominator_count,
+                "proportion_of_denominator": round(count / denominator_count, 8)
+                if denominator_count
+                else None,
+                "definition": definition,
+            }
+        )
+
+    for source in ("papers_with_code", "bio.tools"):
+        raw = audit.raw_counts[source]
+        expanded = audit.expanded_counts[source]
+        labelled = audit.labelled_counts[source]
+        github_backed = audit.github_backed_counts[source]
+        retained = audit.retained_counts[source]
+        add(source, "source_universe", raw, None, None, "Frozen source records before DOI expansion or filtering.")
+        add(
+            source,
+            "expanded_source_observations",
+            expanded,
+            "source_universe",
+            raw,
+            "Source observations after source-specific expansion, including bio.tools DOI expansion.",
+        )
+        add(
+            source,
+            "labelled_records",
+            labelled,
+            "expanded_source_observations",
+            expanded,
+            "Expanded observations with at least one Level 1 or Level 2 target label, before the GitHub filter.",
+        )
+        add(
+            source,
+            "github_backed_observations",
+            github_backed,
+            "expanded_source_observations",
+            expanded,
+            "Expanded observations with a normalized GitHub repository URL, before the target-label filter.",
+        )
+        add(
+            source,
+            "github_backed_research_software_analysis_cohort",
+            retained,
+            "labelled_records",
+            labelled,
+            "Retained canonical cohort requiring both a normalized GitHub repository and at least one target label.",
+        )
+        add(
+            source,
+            "level1_cohort",
+            audit.level1_counts[source],
+            "github_backed_research_software_analysis_cohort",
+            retained,
+            "Retained records with at least one Level 1 target label.",
+        )
+        add(
+            source,
+            "level2_cohort",
+            audit.level2_counts[source],
+            "github_backed_research_software_analysis_cohort",
+            retained,
+            "Retained records with at least one Level 2 target label.",
+        )
+        add(
+            source,
+            "publication_title_available_cohort",
+            audit.present[(source, "paper_title")],
+            "github_backed_research_software_analysis_cohort",
+            retained,
+            "Retained records with a publication title.",
+        )
+        add(
+            source,
+            "publication_abstract_available_cohort",
+            audit.present[(source, "paper_abstract")],
+            "github_backed_research_software_analysis_cohort",
+            retained,
+            "Retained records with a publication abstract.",
+        )
+        add(
+            source,
+            "readme_available_cohort",
+            audit.present[(source, "readme_content")],
+            "github_backed_research_software_analysis_cohort",
+            retained,
+            "Retained records with saved README content.",
+        )
+        add(
+            source,
+            "somef_description_available_cohort",
+            audit.present[(source, "somef_description")],
+            "github_backed_research_software_analysis_cohort",
+            retained,
+            "Retained records with a SoMEF-derived description.",
+        )
+    return rows
+
+
+def github_filter_effect_rows(audit: BuildAudit) -> list[dict[str, Any]]:
+    rows = []
+    for source in ("papers_with_code", "bio.tools"):
+        labelled = audit.labelled_counts[source]
+        retained = audit.retained_counts[source]
+        removed = labelled - retained
+        rows.append(
+            {
+                "source": source,
+                "labelled_records_before_github_filter": labelled,
+                "retained_github_backed_records": retained,
+                "removed_by_github_filter": removed,
+                "proportion_labelled_removed_by_github_filter": round(removed / labelled, 8) if labelled else 0,
+            }
+        )
+    return rows
+
+
+def group_leakage_rows(audit: BuildAudit) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for source in ("papers_with_code", "bio.tools"):
+        total = audit.retained_counts[source]
+        for group_type in ("software", "repository", "publication"):
+            counter = audit.group_members[(source, group_type)]
+            repeated_sizes = [count for count in counter.values() if count > 1]
+            repeated_records = sum(repeated_sizes)
+            rows.append(
+                {
+                    "source": source,
+                    "group_scope": f"{group_type}_group_id",
+                    "total_retained_records": total,
+                    "unique_groups": len(counter),
+                    "groups_containing_more_than_one_record": len(repeated_sizes),
+                    "records_belonging_to_repeated_groups": repeated_records,
+                    "largest_group_size": max(counter.values()) if counter else 0,
+                    "records_that_could_leak_under_naive_row_split": repeated_records,
+                    "proportion_that_could_leak_under_naive_row_split": round(repeated_records / total, 8)
+                    if total
+                    else 0,
+                }
+            )
+
+        leakable_records = 0
+        for record_keys in audit.group_record_keys[source]:
+            for group_type, group_id in record_keys.items():
+                if group_id and audit.group_members[(source, group_type)].get(group_id, 0) > 1:
+                    leakable_records += 1
+                    break
+        rows.append(
+            {
+                "source": source,
+                "group_scope": "any_group_id",
+                "total_retained_records": total,
+                "unique_groups": None,
+                "groups_containing_more_than_one_record": sum(
+                    sum(1 for count in audit.group_members[(source, group_type)].values() if count > 1)
+                    for group_type in ("software", "repository", "publication")
+                ),
+                "records_belonging_to_repeated_groups": leakable_records,
+                "largest_group_size": max(
+                    [
+                        max(audit.group_members[(source, group_type)].values())
+                        for group_type in ("software", "repository", "publication")
+                        if audit.group_members[(source, group_type)]
+                    ]
+                    or [0]
+                ),
+                "records_that_could_leak_under_naive_row_split": leakable_records,
+                "proportion_that_could_leak_under_naive_row_split": round(leakable_records / total, 8)
+                if total
+                else 0,
+            }
+        )
+    return rows
+
+
+def cross_source_exact_overlap_count_rows(audit: BuildAudit) -> list[dict[str, Any]]:
+    rows = []
+    for key_type, mapping in [
+        ("normalized_repository_url", audit.retained_repo_sources),
+        ("doi", audit.retained_doi_sources),
+    ]:
+        overlapping = {key: counts for key, counts in mapping.items() if len(counts) > 1}
+        rows.append(
+            {
+                "key_type": key_type,
+                "overlapping_keys": len(overlapping),
+                "papers_with_code_records": sum(counts.get("papers_with_code", 0) for counts in overlapping.values()),
+                "biotools_records": sum(counts.get("bio.tools", 0) for counts in overlapping.values()),
+                "total_records": sum(sum(counts.values()) for counts in overlapping.values()),
+            }
+        )
     return rows
 
 
@@ -1432,6 +1849,9 @@ def target_leakage_rows() -> list[dict[str, str]]:
         ("source", "SOURCE_IDENTIFIER", "Stratification/provenance only, not a predictor."),
         ("source_item_id", "SOURCE_IDENTIFIER", "Stable source identifier."),
         ("canonical_record_id", "SOURCE_IDENTIFIER", "Deterministic row identifier."),
+        ("software_group_id", "SOURCE_IDENTIFIER", "Deterministic group identifier for leakage-safe splitting."),
+        ("repository_group_id", "SOURCE_IDENTIFIER", "Deterministic repository group identifier for leakage-safe splitting."),
+        ("publication_group_id", "SOURCE_IDENTIFIER", "Deterministic publication group identifier for leakage-safe splitting."),
         ("repository_url", "SOURCE_IDENTIFIER", "Identifier/provenance, not semantic predictor."),
         ("repository_url_normalized", "SOURCE_IDENTIFIER", "Identifier/provenance, not semantic predictor."),
         ("publication_identifier", "SOURCE_IDENTIFIER", "Identifier/provenance, not semantic predictor."),
@@ -1478,6 +1898,9 @@ def write_machine_tables(paths: BuildPaths, audit: BuildAudit) -> dict[str, Path
         "target_leakage_field_classification": paths.tables_dir / "target_leakage_field_classification.csv",
         "unit_of_analysis_counts": paths.tables_dir / "unit_of_analysis_counts.csv",
         "external_enrichment_summary": paths.tables_dir / "external_enrichment_summary.csv",
+        "cohort_counts": paths.tables_dir / "cohort_counts.csv",
+        "experiment_group_leakage_audit": paths.tables_dir / "experiment_group_leakage_audit.csv",
+        "cross_source_exact_overlap_counts": paths.tables_dir / "cross_source_exact_overlap_counts.csv",
     }
     write_csv_rows(table_paths["pipeline_stage_accounting"], pipeline_stage_rows(audit))
     write_csv_rows(table_paths["duplicate_keys"], duplicate_rows(audit))
@@ -1489,6 +1912,9 @@ def write_machine_tables(paths: BuildPaths, audit: BuildAudit) -> dict[str, Path
     write_csv_rows(table_paths["target_leakage_field_classification"], target_leakage_rows())
     write_csv_rows(table_paths["unit_of_analysis_counts"], unit_of_analysis_rows(audit))
     write_csv_rows(table_paths["external_enrichment_summary"], enrichment_summary_rows(audit))
+    write_csv_rows(table_paths["cohort_counts"], cohort_count_rows(audit))
+    write_csv_rows(table_paths["experiment_group_leakage_audit"], group_leakage_rows(audit))
+    write_csv_rows(table_paths["cross_source_exact_overlap_counts"], cross_source_exact_overlap_count_rows(audit))
     return table_paths
 
 
@@ -1497,6 +1923,8 @@ def unit_of_analysis_rows(audit: BuildAudit) -> list[dict[str, Any]]:
     for source in ("papers_with_code", "bio.tools"):
         rows.append({"source": source, "count_type": "source_records", "count": audit.raw_counts[source]})
         rows.append({"source": source, "count_type": "expanded_observations", "count": audit.expanded_counts[source]})
+        rows.append({"source": source, "count_type": "labelled_records", "count": audit.labelled_counts[source]})
+        rows.append({"source": source, "count_type": "github_backed_observations", "count": audit.github_backed_counts[source]})
         rows.append({"source": source, "count_type": "retained_master_records", "count": audit.retained_counts[source]})
         rows.append({"source": source, "count_type": "level1_records", "count": audit.level1_counts[source]})
         rows.append({"source": source, "count_type": "level2_records", "count": audit.level2_counts[source]})
@@ -1583,6 +2011,10 @@ def write_audit_reports(paths: BuildPaths, audit: BuildAudit, ontology: EdamOnto
     overlap = overlap_rows(audit)
     duplicate = duplicate_rows(audit)
     label_stats = label_stats_rows(audit)
+    cohorts = cohort_count_rows(audit)
+    github_filter_effect = github_filter_effect_rows(audit)
+    group_leakage = group_leakage_rows(audit)
+    exact_overlap_counts = cross_source_exact_overlap_count_rows(audit)
 
     unit_body = f"""
 ## Recommendation
@@ -1597,6 +2029,14 @@ important and remains marked for human review before any final experiment.
 ## Core Counts
 
 {markdown_table(unit_of_analysis_rows(audit), limit=40)}
+
+## Explicit Cohorts
+
+The retained master is a GitHub-backed Research Software analysis cohort: it
+requires a normalized GitHub repository and at least one Level 1 or Level 2
+target label. It is not the complete Papers with Code or bio.tools population.
+
+{markdown_table(cohorts, limit=80)}
 
 ## Bio.tools DOI Expansion
 
@@ -1640,10 +2080,37 @@ They are reported here rather than removed.
 """
     write_report(paths.reports_dir / "DATASET_OVERLAP_AUDIT.md", "Dataset Overlap Audit", overlap_body)
 
+    group_body = f"""
+## Grouping Logic
+
+- `repository_group_id`: SHA-256 identifier based on the normalized GitHub repository URL.
+- `publication_group_id`: SHA-256 identifier based on normalized DOI when available; otherwise exact publication URL, source publication identifier, or exact-normalized title.
+- `software_group_id`: for bio.tools, SHA-256 identifier based on `biotools_id`, so DOI-expanded rows from one tool share a software group; for PwC, SHA-256 identifier based on normalized repository identity when available, with source item fallback only for non-GitHub intermediate observations.
+
+No fuzzy software/entity resolution is applied.
+
+## Retained-Cohort Group Leakage Risk
+
+{markdown_table(group_leakage, limit=None)}
+
+## Exact Cross-Source Overlap Counts
+
+Counts are computed on retained records only.
+
+{markdown_table(exact_overlap_counts, limit=None)}
+"""
+    write_report(
+        paths.reports_dir / "EXPERIMENT_GROUP_LEAKAGE_AUDIT.md",
+        "Experiment Group Leakage Audit",
+        group_body,
+    )
+
     filter_body = f"""
 ## Filters Applied In The Candidate Master Build
 
-The candidate master build applies only two record-level filters:
+The candidate master build defines a GitHub-backed Research Software analysis
+cohort. It is not an estimate of the complete Papers with Code or bio.tools
+population. The retained cohort applies only two record-level filters:
 
 1. require a normalized GitHub repository URL;
 2. require at least one target label at either Level 1 or Level 2.
@@ -1655,6 +2122,10 @@ publication metadata.
 ## Accounting Table
 
 {markdown_table(pipeline_stage_rows(audit), limit=40)}
+
+## GitHub Filter Effect Among Labelled Records
+
+{markdown_table(github_filter_effect, limit=None)}
 
 ## Source-Specific Label Cleanup
 
@@ -1738,15 +2209,17 @@ imbalance. Similar label counts are not treated as evidence of comparability.
 ## Scientific Interpretation
 
 Level 1 compares PwC broad collection areas with the highest meaningful EDAM
-Topic categories below the generic Topic root. This is the more defensible
-granularity-aligned comparison, subject to human review of the EDAM DAG
-multi-parent cases.
+Topic categories below the generic Topic root. Level 1 is the primary
+hierarchy-aligned cross-source comparison, subject to human review of the EDAM
+DAG multi-parent cases.
 
-Level 2 compares PwC tasks with original EDAM topics. These are both more
-detailed source annotation spaces, but they are not guaranteed to be
-scientifically equivalent: EDAM topics are ontology concepts, while PwC tasks
-are task taxonomy entries. Treat Level 2 as requiring review before any
-paper-level claim of comparability.
+Level 2 compares PwC tasks with original EDAM topics as fine-grained
+source-specific analysis spaces. Direct cross-source Level 2 comparability
+remains a scientific question, not an assumption: EDAM topics are ontology
+concepts, while PwC tasks are task taxonomy entries.
+
+PwC task-to-area relationships are empirical co-occurrences in the frozen
+source data and are not assumed to be deterministic.
 """
     write_report(paths.reports_dir / "LABEL_GRANULARITY_COMPARISON.md", "Label Granularity Comparison", granularity_body)
 
@@ -1782,15 +2255,20 @@ available. Mismatches are counted in the machine-readable table.
 
 ## GitHub And README Artifacts
 
-Saved repository artifact folders are counted, including README presence and
-metadata JSON validity. Redirects and repository renames are not recoverable
-without network calls unless already present in saved metadata.
+The frozen GitHub metadata cache at `{paths.github_cache_jsonl}` is read when
+present and merged by normalized repository URL. Saved repository artifact
+folders are then used for local README files and SoMEF JSON. Redirects and
+repository renames are not recoverable without network calls unless already
+present in saved metadata.
 
 ## SoMEF
 
 Saved SoMEF JSON files and manifest statuses are counted. The configured
 threshold in the repository is `{config.SOMEF_THRESHOLD}`. Exact SoMEF package
-version is reported as unknown unless captured in local artifacts.
+version is reported as unknown unless captured in local artifacts. The saved
+SoMEF schema in this cache does not expose a top-level `keyword` or `keywords`
+field when `somef_json_files_with_top_level_keyword_key` is zero; in that case
+`somef_keywords` remains empty rather than remapping `application_domain`.
 """
     write_report(paths.reports_dir / "EXTERNAL_ENRICHMENT_AUDIT.md", "External Enrichment Audit", enrichment_body)
 
@@ -1837,7 +2315,7 @@ def scientific_validation_body(audit: BuildAudit, ontology: EdamOntology, label_
             "Review bio.tools DOI expansion before treating expanded rows as independent observations.",
             "Review PwC task-to-area non-determinism before using hierarchical claims.",
             "Review EDAM multi-parent mappings because EDAM is a DAG, not a tree.",
-            "Confirm that Level 2 PwC tasks and EDAM topics are comparable enough for the intended analysis.",
+            "Treat Level 2 PwC tasks and EDAM topics as source-specific unless later review justifies direct comparison.",
         ]
     )
     status_rows = []
@@ -1851,9 +2329,10 @@ def scientific_validation_body(audit: BuildAudit, ontology: EdamOntology, label_
     return f"""
 ## Dataset Identity
 
-The build creates a candidate canonical master dataset plus Level 1 and Level 2
-analysis-ready views from frozen local inputs. It is not a final immutable
-release until human review approves the scientific decisions.
+The build creates a GitHub-backed Research Software analysis cohort plus Level
+1 and Level 2 views from frozen local inputs. It is not a complete Papers with
+Code or bio.tools population, and it is not a final immutable release until
+human review approves the scientific decisions.
 
 ## Unit Of Analysis
 
@@ -1873,6 +2352,10 @@ EDAM ontology: `{ontology.path}` with SHA256 `{ontology.sha256}`.
 ## Filtering
 
 {markdown_table(pipeline_stage_rows(audit), limit=40)}
+
+## Cohort Counts
+
+{markdown_table(cohort_count_rows(audit), limit=80)}
 
 ## Duplicates And Cross-Source Overlap
 
@@ -1903,10 +2386,18 @@ supports them.
 
 {markdown_table(label_stats, limit=20)}
 
+Level 1 is the primary hierarchy-aligned cross-source comparison. Level 2 is a
+fine-grained source-specific analysis space; direct cross-source Level 2
+comparability remains a scientific question, not an assumption.
+
 ## Leakage Risks
 
 Target-derived fields are preserved but classified as unsafe predictors where
 they determine the target.
+
+Deterministic `software_group_id`, `repository_group_id`, and
+`publication_group_id` fields are included for later group-aware splitting. The
+group leakage audit is written to `reports/EXPERIMENT_GROUP_LEAKAGE_AUDIT.md`.
 
 ## Remaining Scientific Concerns
 
@@ -1945,8 +2436,9 @@ def write_release_readme(paths: BuildPaths, audit: BuildAudit, ontology: EdamOnt
 
 ## 1. Purpose
 
-This candidate dataset represents research software metadata from Papers with
-Code and bio.tools for scientific review before final experiments.
+This candidate dataset represents a GitHub-backed Research Software analysis
+cohort from Papers with Code and bio.tools for scientific review before final
+experiments. It is not the complete source population for either source.
 
 ## 2. Sources
 
@@ -1955,6 +2447,8 @@ Code and bio.tools for scientific review before final experiments.
 - bio.tools: local frozen files `{paths.biotools_flat_csv}` and
   `{paths.biotools_raw_jsonl}`. Acquisition date/version: unknown.
 - EDAM: local frozen ontology `{paths.edam_owl}`. Version: {ontology.version}.
+- GitHub metadata cache: local frozen file `{paths.github_cache_jsonl}` when
+  present.
 
 ## 3. Unit Of Analysis
 
@@ -1967,7 +2461,8 @@ multiple DOI values exist. This remains a review item before final freeze.
 The canonical master candidate retains records with a normalized GitHub
 repository URL and at least one usable Level 1 or Level 2 label. A DOI is not
 required for bio.tools in this candidate build. Removed records are accounted
-for in `reports/tables/pipeline_stage_accounting.csv`.
+for in `reports/tables/pipeline_stage_accounting.csv`. Cohort counts are
+reported in `reports/tables/cohort_counts.csv`.
 
 ## 5. Dataset Construction
 
@@ -2002,6 +2497,8 @@ List-valued label fields are stored as JSON lists. Derived views include
 ## 10. Duplicate/Overlap Handling
 
 Duplicates and cross-source overlaps are reported but not removed automatically.
+Deterministic `software_group_id`, `repository_group_id`, and
+`publication_group_id` fields are included for later group-aware experiments.
 
 ## 11. Missing Data
 
@@ -2010,8 +2507,8 @@ reason is reported in `reports/tables/missing_data_by_source.csv`.
 
 ## 12. External Enrichment
 
-OpenAlex, GitHub/README, and SoMEF data are read from saved local caches only.
-The build performs no network calls.
+OpenAlex, GitHub metadata, README, and SoMEF data are read from saved local
+caches only. The build performs no network calls.
 
 ## 13. Potential Biases
 
@@ -2065,6 +2562,7 @@ def write_manifest(paths: BuildPaths, audit: BuildAudit, ontology: EdamOntology)
         paths.biotools_raw_jsonl,
         paths.edam_owl,
         paths.openalex_cache_jsonl,
+        paths.github_cache_jsonl,
         paths.somef_manifest_jsonl,
     ]
     frozen_inputs = []
@@ -2084,6 +2582,10 @@ def write_manifest(paths: BuildPaths, audit: BuildAudit, ontology: EdamOntology)
         paths.release_dir / "level2_fine_grained.jsonl",
         paths.release_dir / "README.md",
         paths.mappings_dir / "edam_detailed_to_high_level.csv",
+        paths.reports_dir / "EXPERIMENT_GROUP_LEAKAGE_AUDIT.md",
+        paths.tables_dir / "cohort_counts.csv",
+        paths.tables_dir / "experiment_group_leakage_audit.csv",
+        paths.tables_dir / "cross_source_exact_overlap_counts.csv",
     ]
     outputs = []
     for path in output_paths:
@@ -2114,6 +2616,9 @@ def write_manifest(paths: BuildPaths, audit: BuildAudit, ontology: EdamOntology)
             "openalex_cache_jsonl": next(
                 (item for item in frozen_inputs if item["path"] == str(paths.openalex_cache_jsonl)), {}
             ),
+            "github_cache_jsonl": next(
+                (item for item in frozen_inputs if item["path"] == str(paths.github_cache_jsonl)), {}
+            ),
             "somef_run_manifest_jsonl": next(
                 (item for item in frozen_inputs if item["path"] == str(paths.somef_manifest_jsonl)), {}
             ),
@@ -2125,6 +2630,11 @@ def write_manifest(paths: BuildPaths, audit: BuildAudit, ontology: EdamOntology)
         "hierarchy_definitions": {
             "pwc": "Broad labels from main_collection_areas; fine labels from PwC tasks.",
             "edam": "Detailed EDAM topics mapped through frozen EDAM DAG to Topic-root children.",
+        },
+        "grouping_definitions": {
+            "repository_group_id": "SHA-256 identifier based on normalized GitHub repository URL.",
+            "publication_group_id": "SHA-256 identifier based on normalized DOI, then exact publication URL, source publication identifier, or exact-normalized title.",
+            "software_group_id": "bio.tools uses biotools_id; PwC uses normalized repository identity where available. No fuzzy entity resolution.",
         },
         "unique_label_counts": {
             f"{source}:{level}": len(counter)
@@ -2184,6 +2694,12 @@ def validate_accounting(audit: BuildAudit) -> None:
             audit.blocking_issues.append(
                 f"Accounting mismatch for {source}: expanded={expanded}, retained={retained}, removed={removed}"
             )
+        if audit.labelled_counts[source] > expanded:
+            audit.blocking_issues.append(f"Labelled-count accounting mismatch for {source}")
+        if retained > audit.labelled_counts[source]:
+            audit.blocking_issues.append(f"Retained records exceed labelled records for {source}")
+        if retained > audit.github_backed_counts[source]:
+            audit.blocking_issues.append(f"Retained records exceed GitHub-backed observations for {source}")
         level1_missing = audit.level_filter_reasons.get(f"{source}:level1_high_level", Counter()).get(
             "missing_target_labels_for_level", 0
         )
@@ -2194,6 +2710,14 @@ def validate_accounting(audit: BuildAudit) -> None:
         )
         if retained != audit.level2_counts[source] + level2_missing:
             audit.blocking_issues.append(f"Level 2 accounting mismatch for {source}")
+    for row in label_stats_rows(audit):
+        source = row["source"]
+        expected = audit.level1_counts[source] if row["level"] == "level1_high_level" else audit.level2_counts[source]
+        if row["records"] != expected:
+            audit.blocking_issues.append(
+                f"Label statistics denominator mismatch for {source} {row['level']}: "
+                f"records={row['records']}, expected={expected}"
+            )
 
 
 def run_build(paths: BuildPaths | None = None) -> dict[str, Any]:
