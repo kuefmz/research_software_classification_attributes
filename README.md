@@ -63,6 +63,26 @@ make training-local-all-resume
 The full protocol, model list, output manifest, and smoke-test commands are in
 `docs/reproducible_training.md`.
 
+## Canonical Dataset Finalization
+
+The audit-first offline build command for the candidate canonical paper dataset
+is:
+
+```bash
+poetry run python scripts/build_final_dataset.py
+```
+
+It reads only frozen local inputs and makes no network calls. Deterministic
+record IDs are SHA-256 based hashes of stable source semantics:
+
+- PwC: source, source item, publication URL, and normalized repository URL.
+- bio.tools: source, bio.tools ID, DOI when present, and normalized repository URL.
+
+The generated `data/final/paper_v1/` files are candidate review artifacts. They
+must not be treated as experiment-ready until
+`reports/DATASET_SCIENTIFIC_VALIDATION.md` has no blocking issues and the
+scientific review has approved the remaining review items.
+
 Quick 10-record smoke check without touching `final_results/`:
 
 ```bash

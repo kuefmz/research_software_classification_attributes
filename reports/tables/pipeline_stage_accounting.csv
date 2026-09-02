@@ -1,0 +1,10 @@
+stage,source,input_records,output_records,added_by_expansion,removed_records,removal_reason
+source_to_observation_expansion,papers_with_code,573165,573165,0,0,not_applicable
+canonical_master_filter,papers_with_code,573165,146034,0,405475,missing_github_repository
+canonical_master_filter,papers_with_code,573165,146034,0,21656,missing_all_target_labels
+level1_high_level_view_filter,papers_with_code,146034,42692,0,103342,missing_target_labels_for_level
+level2_fine_grained_view_filter,papers_with_code,146034,141442,0,4592,missing_target_labels_for_level
+source_to_observation_expansion,bio.tools,33084,36417,3333,0,not_applicable
+canonical_master_filter,bio.tools,36417,15294,0,21123,missing_github_repository
+level1_high_level_view_filter,bio.tools,15294,14935,0,359,missing_target_labels_for_level
+level2_fine_grained_view_filter,bio.tools,15294,15294,0,0,none
