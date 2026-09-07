@@ -1,7 +1,16 @@
 from __future__ import annotations
-import unittest
 
-from src.experiments.level2 import support_threshold_analysis
+import tempfile
+import unittest
+from pathlib import Path
+
+import numpy as np
+from scipy.sparse import csr_matrix
+
+from src.experiments.level2 import (
+    resumable_ovr_linearsvc_scores,
+    support_threshold_analysis,
+)
 
 
 def row(record_id: str, source: str, labels: list[str]) -> dict:
@@ -121,6 +130,85 @@ class Level2SupportThresholdTests(unittest.TestCase):
         result = self.analyse(train, validation, test)[0]
         self.assertEqual(result["eligible_labels"], ["A"])
         self.assertEqual(result["training_support"], {"A": 2})
+
+
+class Level2ResumableLinearSVCTests(unittest.TestCase):
+    def setUp(self):
+        # Small separable sparse fixture. These are implementation tests only;
+        # no scientific data or experiment results are produced here.
+        self.x_train = csr_matrix(
+            np.asarray(
+                [
+                    [2.0, 0.0],
+                    [1.5, 0.0],
+                    [0.0, 2.0],
+                    [0.0, 1.5],
+                    [1.0, 1.0],
+                    [0.2, 0.2],
+                ]
+            )
+        )
+        self.y_train = csr_matrix(
+            np.asarray(
+                [
+                    [1, 0],
+                    [1, 0],
+                    [0, 1],
+                    [0, 1],
+                    [1, 1],
+                    [0, 0],
+                ],
+                dtype=np.int8,
+            )
+        )
+        self.x_validation = csr_matrix(np.asarray([[2.0, 0.0], [0.0, 2.0], [1.0, 1.0]]))
+        self.x_test = csr_matrix(np.asarray([[1.7, 0.1], [0.1, 1.7]]))
+        self.labels = ["A", "B"]
+
+    def run_scores(self, checkpoint_dir: Path):
+        return resumable_ovr_linearsvc_scores(
+            x_train=self.x_train,
+            y_train=self.y_train,
+            x_validation=self.x_validation,
+            x_test=self.x_test,
+            labels=self.labels,
+            checkpoint_dir=checkpoint_dir,
+            max_iter=1000,
+            progress_every=0,
+        )
+
+    def test_per_label_checkpoints_are_reused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            val1, test1, meta1 = self.run_scores(root)
+            self.assertEqual([m["status"] for m in meta1], ["fitted", "fitted"])
+            self.assertTrue((root / "label_scores" / "label_00000.npz").exists())
+            self.assertTrue((root / "label_scores" / "label_00001.npz").exists())
+
+            val2, test2, meta2 = self.run_scores(root)
+            self.assertEqual([m["status"] for m in meta2], ["reused", "reused"])
+            np.testing.assert_allclose(val1, val2)
+            np.testing.assert_allclose(test1, test2)
+
+    def test_only_missing_label_is_refit_after_interruption(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            val1, test1, _ = self.run_scores(root)
+            (root / "label_scores" / "label_00001.npz").unlink()
+
+            val2, test2, meta2 = self.run_scores(root)
+            self.assertEqual(meta2[0]["status"], "reused")
+            self.assertEqual(meta2[1]["status"], "fitted")
+            np.testing.assert_allclose(val1, val2)
+            np.testing.assert_allclose(test1, test2)
+
+    def test_progress_manifest_marks_completion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.run_scores(root)
+            progress = (root / "progress.json").read_text(encoding="utf-8")
+            self.assertIn('"status": "CLASSIFIERS_COMPLETE"', progress)
+            self.assertIn('"completed_classifiers": 2', progress)
 
 
 if __name__ == "__main__":
