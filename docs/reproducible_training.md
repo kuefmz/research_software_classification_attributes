@@ -1,5 +1,7 @@
 # Reproducible Training Protocol
 
+> **Paper-v1 note.** The manuscript's final RQ4/RQ5 model protocol is documented in [paper_v1_model_protocol.md](paper_v1_model_protocol.md). That file is the authoritative record for the model families and hyperparameters reported in the paper. The material below documents the broader experiment runner and may include pipelines that were explored but are not part of the final manuscript.
+
 The protocol uses fixed train/test splits, deterministic classical classifiers,
 frozen pretrained feature extraction, and optional local instruction-tuned
 prompting. Transformer parameters are never updated.
