@@ -1,6 +1,6 @@
 # Reproducible Training Protocol
 
-> **Paper-v1 note.** The manuscript's final RQ4/RQ5 model protocol is documented in [paper_v1_model_protocol.md](paper_v1_model_protocol.md). That file is the authoritative record for the model families and hyperparameters reported in the paper. The material below documents the broader experiment runner and may include pipelines that were explored but are not part of the final manuscript.
+> **Paper-v1 note.** The manuscript's exact implementation protocol is split between [paper_v1_methodology_protocol.md](paper_v1_methodology_protocol.md) for cohort construction, task definitions, splitting, leakage controls, threshold selection, evaluation, and bootstrap details, and [paper_v1_model_protocol.md](paper_v1_model_protocol.md) for model identifiers and training settings. These files are the authoritative technical record for the final paper. The material below documents the broader experiment runner and may include pipelines that were explored but are not part of the final manuscript.
 
 The protocol uses fixed train/test splits, deterministic classical classifiers,
 frozen pretrained feature extraction, and optional local instruction-tuned
